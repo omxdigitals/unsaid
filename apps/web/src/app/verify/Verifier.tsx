@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { address, createSolanaRpc, type Address } from '@solana/kit';
 import { computeCommitment, deriveThoughtSeed, fromBase64Url } from '@unsaid/crypto';
 import { UNSAID_PROGRAM_ID, deriveRecordAddress, decodeThoughtRecord } from '@unsaid/solana';
-import { Logo } from '@/components/Logo';
+import { Kicker, Masthead } from '@/components/editorial';
 
 const NETWORK = process.env.NEXT_PUBLIC_SOLANA_NETWORK ?? 'devnet';
 const RPC_URL =
@@ -126,20 +126,27 @@ export function Verifier() {
   const ready = owner.trim().length > 0 && thoughtId.trim().length > 0;
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-6">
-      <header className="flex items-baseline justify-between py-8">
-        <Link href="/" className="text-ink" aria-label="UNSAID — home">
-          <Logo withWordmark />
-        </Link>
-        <nav className="flex gap-6 text-sm text-ink-soft">
-          <Link href="/privacy" className="hover:text-ink">
-            How it works
-          </Link>
-        </nav>
-      </header>
+    <div className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-5 sm:px-8">
+      <Masthead
+        compact
+        nav={
+          <nav className="flex gap-6 text-sm text-ink-soft">
+            <Link href="/privacy" className="hover:text-brand-strong">
+              How it works
+            </Link>
+          </nav>
+        }
+        dateline={
+          <>
+            <span>The fact-check desk</span>
+            <span>Reads Solana directly · Our servers not involved</span>
+          </>
+        }
+      />
 
-      <main className="flex flex-1 flex-col py-6">
-        <h1 className="font-serif text-3xl leading-tight text-ink">Verify a proof</h1>
+      <main className="flex flex-1 flex-col py-10">
+        <Kicker>Don&rsquo;t trust us · Check us</Kicker>
+        <h1 className="mt-3 font-display text-4xl font-black leading-tight tracking-tight text-ink sm:text-5xl">Verify a proof</h1>
         <p className="mt-4 max-w-prose text-sm leading-relaxed text-ink-soft">
           Check that an encrypted memory existed at a point in time, and who owned it — without
           seeing a word of it. This page reads Solana directly. Our servers are not involved, so
@@ -147,14 +154,14 @@ export function Verifier() {
         </p>
 
         <form
-          className="mt-10 flex flex-col gap-4"
+          className="mt-10 flex flex-col gap-4 rounded-2xl border border-line bg-paper-raised p-5 sm:p-7"
           onSubmit={(event) => {
             event.preventDefault();
             void check(owner, thoughtId, contentHash);
           }}
         >
           <label className="flex flex-col gap-2">
-            <span className="text-xs uppercase tracking-wide text-ink-faint">Owner address</span>
+            <span className="kicker !text-ink-faint">Owner address</span>
             <input
               id="verify-owner"
               value={owner}
@@ -162,12 +169,12 @@ export function Verifier() {
               placeholder="The wallet that anchored it"
               autoComplete="off"
               spellCheck={false}
-              className="rounded-lg border border-field bg-paper-raised px-4 py-3 font-mono text-sm text-ink outline-none placeholder:font-sans placeholder:text-ink-faint focus:border-ember"
+              className="rounded-xl border border-field bg-paper px-4 py-3 font-mono text-sm text-ink outline-none placeholder:font-sans placeholder:text-ink-faint focus:border-ember"
             />
           </label>
 
           <label className="flex flex-col gap-2">
-            <span className="text-xs uppercase tracking-wide text-ink-faint">Memory ID</span>
+            <span className="kicker !text-ink-faint">Memory ID</span>
             <input
               id="verify-id"
               value={thoughtId}
@@ -175,12 +182,12 @@ export function Verifier() {
               placeholder="The id from the proof panel"
               autoComplete="off"
               spellCheck={false}
-              className="rounded-lg border border-field bg-paper-raised px-4 py-3 font-mono text-sm text-ink outline-none placeholder:font-sans placeholder:text-ink-faint focus:border-ember"
+              className="rounded-xl border border-field bg-paper px-4 py-3 font-mono text-sm text-ink outline-none placeholder:font-sans placeholder:text-ink-faint focus:border-ember"
             />
           </label>
 
           <label className="flex flex-col gap-2">
-            <span className="text-xs uppercase tracking-wide text-ink-faint">
+            <span className="kicker !text-ink-faint">
               Ciphertext hash — optional
             </span>
             <input
@@ -190,14 +197,14 @@ export function Verifier() {
               placeholder="Proves this exact encrypted memory, not just that one existed"
               autoComplete="off"
               spellCheck={false}
-              className="rounded-lg border border-field bg-paper-raised px-4 py-3 font-mono text-sm text-ink outline-none placeholder:font-sans placeholder:text-ink-faint focus:border-ember"
+              className="rounded-xl border border-field bg-paper px-4 py-3 font-mono text-sm text-ink outline-none placeholder:font-sans placeholder:text-ink-faint focus:border-ember"
             />
           </label>
 
           <button
             type="submit"
             disabled={!ready || busy}
-            className="mt-2 self-start rounded-lg border border-transparent bg-ink px-6 py-3 text-paper transition-colors disabled:cursor-not-allowed disabled:border-field disabled:bg-transparent disabled:text-ink-faint"
+            className="mt-2 self-start rounded-full border border-transparent bg-brand px-6 py-3 font-medium text-on-brand hover:bg-brand-bright transition-colors disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-faint"
           >
             {busy ? 'Reading the chain…' : 'Check the chain'}
           </button>
@@ -210,8 +217,8 @@ export function Verifier() {
         )}
 
         {result.kind === 'missing' && (
-          <section className="mt-10 border-t border-line pt-6">
-            <h2 className="font-serif text-xl text-ink">No record at that address</h2>
+          <section className="mt-10 border-t-[3px] border-rule pt-6">
+            <h2 className="font-display text-2xl font-bold text-ink">No record at that address</h2>
             <p className="mt-3 max-w-prose text-sm leading-relaxed text-ink-soft">
               Nothing has been anchored for that owner and memory. Either it was never anchored,
               the details do not match, or it was anchored on a different network.
@@ -223,8 +230,9 @@ export function Verifier() {
         )}
 
         {result.kind === 'found' && (
-          <section className="mt-10 border-t border-line pt-6">
-            <h2 className="font-serif text-xl text-ink">
+          <section className="mt-10 border-t-[3px] border-rule pt-6">
+            <Stamp ok={result.commitmentMatches !== false} />
+            <h2 className="mt-5 font-display text-2xl font-bold text-ink">
               {result.commitmentMatches === false
                 ? 'A record exists, but it is not this memory'
                 : 'This memory was anchored'}
@@ -253,7 +261,7 @@ export function Verifier() {
               }`}
               target="_blank"
               rel="noreferrer noopener"
-              className="mt-6 inline-block text-sm text-ink-faint underline underline-offset-4 hover:text-ink-soft"
+              className="mt-6 inline-block text-sm font-medium text-brand-strong underline underline-offset-4"
             >
               See it on the explorer
             </a>
@@ -298,4 +306,17 @@ function areEqual(a: Uint8Array, b: Uint8Array): boolean {
 
 function toHex(bytes: Uint8Array): string {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/** The verdict, as a rubber stamp. Words carry it too; colour only reinforces. */
+function Stamp({ ok }: { ok: boolean }) {
+  return (
+    <p
+      className={`inline-block animate-stamp rounded-lg border-[3px] px-4 py-1.5 font-display text-2xl font-black uppercase tracking-[0.12em] ${
+        ok ? 'border-brand text-brand-strong' : 'border-ember text-ember'
+      }`}
+    >
+      {ok ? 'Verified' : 'Mismatch'}
+    </p>
+  );
 }

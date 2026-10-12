@@ -53,7 +53,7 @@ export function VaultExport() {
         type="button"
         onClick={run}
         disabled={busy}
-        className="mt-5 rounded-lg border border-transparent bg-ink px-5 py-2.5 text-sm text-paper disabled:cursor-not-allowed disabled:border-field disabled:bg-transparent disabled:text-ink-faint"
+        className="mt-5 rounded-full bg-ink px-5 py-2.5 text-sm text-paper disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-faint"
       >
         {busy ? 'Decrypting…' : 'Export everything'}
       </button>

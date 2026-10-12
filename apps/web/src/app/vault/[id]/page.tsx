@@ -143,16 +143,16 @@ function ThoughtDetail() {
       )}
 
       {text && (
-        <p className="mt-6 whitespace-pre-wrap font-serif text-lg leading-relaxed text-ink">
+        <p className="mt-6 whitespace-pre-wrap font-serif text-xl leading-relaxed text-ink">
           {text}
         </p>
       )}
       {audioUrl && <audio controls src={audioUrl} className="mt-6 w-full" />}
 
       {echo && (
-        <div className="mt-10 rounded-xl border border-line bg-paper-raised p-6">
-          <p className="text-xs uppercase tracking-wide text-ink-faint">Echo</p>
-          <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-ink-soft">
+        <div className="mt-10 border-l-4 border-brand bg-paper-tint py-5 pl-6 pr-5">
+          <p className="kicker">Echo reflects</p>
+          <p className="mt-3 whitespace-pre-wrap font-serif text-lg leading-relaxed text-ink">
             {echo.content}
           </p>
           {echo.quota.remaining <= 5 && (
@@ -199,7 +199,7 @@ function ThoughtDetail() {
       </div>
 
       {confirmDelete && (
-        <div className="mt-8 rounded-xl border border-line bg-paper-raised p-6">
+        <div className="mt-8 rounded-2xl border border-line bg-paper-raised p-6">
           <p className="text-sm leading-relaxed text-ink">
             {confirmDelete === 'forget'
               ? 'Forgetting destroys the key that opens this memory. Even if a copy of the encrypted file survives somewhere, nothing can read it again — including us. This cannot be undone.'
@@ -209,7 +209,7 @@ function ThoughtDetail() {
             <button
               type="button"
               onClick={() => remove(confirmDelete)}
-              className="rounded-lg bg-ink px-5 py-2.5 text-sm text-paper"
+              className="rounded-full bg-ink px-5 py-2.5 text-sm text-paper"
             >
               {confirmDelete === 'forget' ? 'Forget it' : 'Delete it'}
             </button>

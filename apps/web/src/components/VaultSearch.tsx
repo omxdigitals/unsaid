@@ -85,7 +85,7 @@ export function VaultSearch({ thoughts, token, vaultKey }: {
           <button
             type="button"
             onClick={prepare}
-            className="mt-4 rounded-xl bg-ink px-5 py-3 text-sm text-paper"
+            className="mt-4 rounded-full bg-ink px-5 py-3 text-sm text-paper"
           >
             Read my {textCount} written {textCount === 1 ? 'memory' : 'memories'} to search
           </button>

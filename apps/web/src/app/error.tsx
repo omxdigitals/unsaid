@@ -16,7 +16,7 @@ export default function Error({ reset }: { error: Error & { digest?: string }; r
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col justify-center px-6 py-16">
-      <h1 className="font-serif text-2xl text-ink">That screen did not load.</h1>
+      <h1 className="font-display text-3xl font-bold tracking-tight text-ink">That screen did not load.</h1>
       <p className="mt-3 max-w-prose text-sm leading-relaxed text-ink-soft">
         Nothing was sent anywhere and nothing was changed. Your vault is as you left it. Reloading
         locks it, so you will be asked for your phrase again.
@@ -25,13 +25,13 @@ export default function Error({ reset }: { error: Error & { digest?: string }; r
         <button
           type="button"
           onClick={reset}
-          className="rounded-lg border border-transparent bg-ink px-6 py-3 text-paper"
+          className="rounded-full bg-ink px-6 py-3 text-paper"
         >
           Try again
         </button>
         <a
           href="/vault"
-          className="rounded-lg border border-field px-6 py-3 text-sm text-ink-soft hover:text-ink"
+          className="rounded-full border border-ink px-6 py-3 text-sm text-ink-soft hover:text-ink"
         >
           Back to the vault
         </a>

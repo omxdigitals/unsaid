@@ -13,7 +13,7 @@ export default function TermsPage() {
   return (
     <Shell screen="privacy">
       <article className="py-8">
-        <h1 className="font-serif text-2xl text-ink">Terms of Use</h1>
+        <h1 className="font-display text-3xl font-bold tracking-tight text-ink">Terms of Use</h1>
         <p className="mt-2 text-xs text-ink-faint">Last updated 30 August 2026</p>
 
         <Section title="What UNSAID is">
@@ -66,7 +66,7 @@ export default function TermsPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-8">
-      <h2 className="text-base text-ink">{title}</h2>
+      <h2 className="font-display text-lg font-bold text-ink">{title}</h2>
       <div className="mt-2 text-sm leading-relaxed text-ink-soft">{children}</div>
     </section>
   );

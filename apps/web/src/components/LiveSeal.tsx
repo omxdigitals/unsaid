@@ -90,8 +90,8 @@ export function LiveSeal() {
   return (
     <div className="rounded-2xl border border-line bg-paper-raised p-5 sm:p-7">
       <div className="flex flex-col gap-1.5">
-        <p className="text-xs uppercase tracking-[0.14em] text-accent">Try it right here</p>
-        <h3 className="font-serif text-xl text-ink sm:text-2xl">
+        <p className="kicker">Try it right here</p>
+        <h3 className="font-display text-xl font-bold text-ink sm:text-2xl">
           Write something. Watch it become unreadable.
         </h3>
         <p className="text-sm leading-relaxed text-ink-soft">
@@ -121,7 +121,7 @@ export function LiveSeal() {
           type="button"
           onClick={seal}
           disabled={phase === 'working'}
-          className="mt-3 rounded-xl bg-ink px-6 py-3 text-base text-paper disabled:opacity-70"
+          className="mt-3 rounded-full bg-brand px-6 py-3 text-base font-medium text-on-brand hover:bg-brand-bright disabled:opacity-70"
         >
           {phase === 'working'
             ? 'Deriving your key — 600,000 rounds…'
@@ -186,7 +186,7 @@ function Stat({ label, value, note }: { label: string; value: string; note: stri
   return (
     <div className="rounded-xl border border-line bg-paper p-3">
       <dt className="text-xs text-ink-faint">{label}</dt>
-      <dd className="mt-1 font-serif text-xl text-ink">{value}</dd>
+      <dd className="mt-1 font-display text-2xl font-bold text-brand-strong">{value}</dd>
       <dd className="text-xs text-ink-faint">{note}</dd>
     </div>
   );

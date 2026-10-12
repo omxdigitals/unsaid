@@ -225,3 +225,41 @@ the client decrypts everything and matches in memory, which leaks nothing at
 all: no query, no index, no access pattern over an index. Every SSE scheme
 leaks some of that, and the published attacks on those leakage profiles are
 the reason not to buy a weaker property for a problem we do not have.
+
+## The orange edition, and a pitch deck inside the app
+
+**Palette.** A newspaper front page in cream newsprint and warm-black ink, with
+orange from the OMX Lab Coral scale as the one loud colour. A Lagoon (blue)
+version came first and was dropped at review: no blue or teal remains. The site
+no longer follows the system dark mode — the front-page look only works on
+paper. Full table and contrast figures in `docs/brand.md`.
+
+**Why four oranges.** Coral 500 is 2.4:1 as text, so fills, hover fills, text
+links and headline words are separate tokens (`brand`, `brand-bright`,
+`brand-strong`, `brand-display`), each checked against paper.
+
+**The old rule bent, not broken.** "No accent-coloured calls to action" was a
+rule for the vault. Marketing surfaces use orange buttons and a highlighter;
+the vault keeps ink buttons and no highlighter, for the original reason.
+
+**One frame for every page.** The vault used a narrower column and a different
+header from the landing page, which read as two products. Every page now shares
+the landing page's width, wordmark and rules; on desktop the vault fills the
+margin with a side panel instead of empty paper.
+
+**Visuals are code, not photographs.** The phone and block-explorer mockups are
+components, so they stay sharp and the page makes no request to an image host.
+The explorer rows are labelled as examples on the panel itself.
+
+**The deck is `/pitch`, not a file.** Its demos are the real components — the
+encryption slide is `LiveSeal`, the architecture slide is the same `PhalaFlow`
+the Privacy Centre shows. Every number lives in `app/pitch/data.ts` with a
+source and a kind (measured, expected, projected, survey), and the kind is
+printed on the slide. The attested round trip is in `benchmarks.md §8` as not
+measured; the deck shows the flow as architecture and labels the enclave
+overhead as expected rather than present it as a result.
+
+**Research is drawn from `benchmarks.md`, not restated.** `/research` and the
+landing section chart the measured figures and list what is not measured yet.
+Charts use one hue each; a two-series comparison is two panels, because every
+orange-plus-second-hue pair failed the colour-blindness check.

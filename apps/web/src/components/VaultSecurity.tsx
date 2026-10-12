@@ -87,7 +87,7 @@ export function VaultSecurity() {
           placeholder="New phrase"
           autoComplete="new-password"
           minLength={MIN_PASSPHRASE}
-          className="rounded-lg border border-field bg-paper px-4 py-3 text-ink outline-none placeholder:text-ink-faint focus:border-ember"
+          className="rounded-xl border border-field bg-paper px-4 py-3 text-ink outline-none placeholder:text-ink-faint focus:border-brand-strong focus:shadow-[0_0_0_4px_var(--color-brand-wash)] focus-visible:outline-none"
         />
         <input
           type="password"
@@ -97,7 +97,7 @@ export function VaultSecurity() {
           autoComplete="new-password"
           aria-invalid={mismatch ? true : undefined}
           aria-describedby={mismatch ? 'phrase-mismatch' : undefined}
-          className="rounded-lg border border-field bg-paper px-4 py-3 text-ink outline-none placeholder:text-ink-faint focus:border-ember"
+          className="rounded-xl border border-field bg-paper px-4 py-3 text-ink outline-none placeholder:text-ink-faint focus:border-brand-strong focus:shadow-[0_0_0_4px_var(--color-brand-wash)] focus-visible:outline-none"
         />
 
         {mismatch && (
@@ -116,7 +116,7 @@ export function VaultSecurity() {
         <button
           type="submit"
           disabled={phraseState === 'busy' || phrase.length < MIN_PASSPHRASE || mismatch}
-          className="self-start rounded-lg border border-transparent bg-ink px-5 py-2.5 text-sm text-paper disabled:cursor-not-allowed disabled:border-field disabled:bg-transparent disabled:text-ink-faint"
+          className="self-start rounded-full bg-ink px-5 py-2.5 text-sm text-paper disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-faint"
         >
           {phraseState === 'busy' ? 'Re-locking…' : 'Change my phrase'}
         </button>
@@ -135,7 +135,7 @@ export function VaultSecurity() {
               <button
                 type="button"
                 onClick={downloadKit}
-                className="rounded-lg bg-ink px-5 py-2.5 text-sm text-paper"
+                className="rounded-full bg-ink px-5 py-2.5 text-sm text-paper"
               >
                 Download it
               </button>
@@ -159,7 +159,7 @@ export function VaultSecurity() {
               type="button"
               onClick={reissue}
               disabled={kitBusy}
-              className="mt-5 rounded-lg border border-field px-5 py-2.5 text-sm text-ink disabled:cursor-not-allowed disabled:text-ink-faint"
+              className="mt-5 rounded-full border border-ink px-5 py-2.5 text-sm text-ink disabled:cursor-not-allowed disabled:text-ink-faint"
             >
               {kitBusy ? 'Issuing…' : 'Issue a new recovery kit'}
             </button>

@@ -19,7 +19,7 @@ export function ReflectConsentSheet({
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center">
       <div className="w-full max-w-md rounded-2xl border border-line bg-paper-raised p-6">
-        <h2 className="font-serif text-xl text-ink">Before Echo reads this</h2>
+        <h2 className="font-display text-xl font-bold text-ink">Before Echo reads this</h2>
 
         <ul className="mt-5 flex flex-col gap-3 text-sm leading-relaxed text-ink-soft">
           <li>
@@ -41,7 +41,7 @@ export function ReflectConsentSheet({
           <button
             type="button"
             onClick={onConfirm}
-            className="rounded-xl bg-ink px-5 py-3 text-paper"
+            className="rounded-full bg-ink px-5 py-3 text-paper"
           >
             I understand — send this one
           </button>

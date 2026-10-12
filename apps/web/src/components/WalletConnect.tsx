@@ -124,7 +124,7 @@ function WalletOption({
         type="button"
         onClick={handleConnect}
         disabled={isConnecting}
-        className="flex w-full items-center gap-3 rounded-lg border border-field px-4 py-3 text-left text-sm text-ink hover:opacity-80 disabled:cursor-not-allowed disabled:text-ink-faint"
+        className="flex w-full items-center gap-3 rounded-xl border border-field px-4 py-3 text-left text-sm text-ink hover:opacity-80 disabled:cursor-not-allowed disabled:text-ink-faint"
       >
         {wallet.icon && (
           // eslint-disable-next-line @next/next/no-img-element -- data: URI from the wallet

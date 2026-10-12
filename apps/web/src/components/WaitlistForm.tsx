@@ -57,12 +57,12 @@ export function WaitlistForm() {
         // `min-w-0`: an input carries an intrinsic width from its `size`
         // attribute, which a flex child will not shrink below — it was forcing
         // this section 8px wider than a 390px phone can show.
-        className="w-full min-w-0 flex-1 rounded-lg border border-field bg-paper-raised px-4 py-3 text-ink outline-none placeholder:text-ink-faint focus:border-ember"
+        className="w-full min-w-0 flex-1 rounded-xl border border-field bg-paper-raised px-4 py-3 text-ink outline-none placeholder:text-ink-faint focus:border-brand-strong focus:shadow-[0_0_0_4px_var(--color-brand-wash)] focus-visible:outline-none"
       />
       <button
         type="submit"
         disabled={state === 'sending'}
-        className="rounded-lg border border-transparent bg-ink px-5 py-3 text-paper disabled:cursor-not-allowed disabled:border-field disabled:bg-transparent disabled:text-ink-faint"
+        className="rounded-full bg-ink px-5 py-3 text-paper disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-faint"
       >
         {state === 'sending' ? 'Adding…' : 'Keep me posted'}
       </button>

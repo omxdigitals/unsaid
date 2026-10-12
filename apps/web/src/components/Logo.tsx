@@ -43,7 +43,12 @@ export function Logo({
   return (
     <span className={`inline-flex items-center gap-2.5 ${className ?? ''}`}>
       {mark}
-      <span className="font-serif text-lg tracking-wide">UNSAID</span>
+      <span
+        className="font-masthead font-black tracking-[0.06em]"
+        style={{ fontSize: size * 0.78 }}
+      >
+        UNSAID
+      </span>
     </span>
   );
 }

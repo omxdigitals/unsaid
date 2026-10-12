@@ -40,7 +40,7 @@ export function BackendNotice() {
   if (reachable !== false) return null;
 
   return (
-    <div role="status" className="mt-6 rounded-lg border border-field bg-paper-raised p-4">
+    <div role="status" className="mt-6 rounded-xl border border-field bg-paper-raised p-4">
       <p className="text-sm text-ink">The vault&rsquo;s backend is not reachable from here.</p>
       <p className="mt-2 max-w-prose text-sm leading-relaxed text-ink-soft">
         Nothing you do on this page will be saved. The parts that depend on nobody —{' '}

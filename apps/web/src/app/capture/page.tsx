@@ -2,6 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Icon } from '@/components/Icon';
 import { Shell } from '@/components/Shell';
 import { UnlockGate } from '@/components/UnlockGate';
 import { useVault } from '@/lib/vault';
@@ -201,7 +202,7 @@ function CaptureScreen() {
   if (stage === 'saved') {
     return (
       <div className="flex flex-1 flex-col justify-center py-16">
-        <h1 className="font-serif text-2xl text-ink">Saved, and only you can open it.</h1>
+        <h1 className="font-display text-3xl font-bold tracking-tight text-ink">Saved, and only you can open it.</h1>
         <p className="mt-4 text-sm leading-relaxed text-ink-soft">
           It was encrypted on this device before it was stored. You control this memory.
         </p>
@@ -209,14 +210,14 @@ function CaptureScreen() {
           <button
             type="button"
             onClick={() => router.push(savedId ? `/vault/${savedId}` : '/vault')}
-            className="rounded-xl bg-ink px-6 py-4 text-paper"
+            className="rounded-full bg-ink px-6 py-4 text-paper"
           >
             Open it
           </button>
           <button
             type="button"
             onClick={() => router.push('/app')}
-            className="rounded-xl border border-field px-6 py-4 text-ink"
+            className="rounded-full border border-field px-6 py-4 text-ink"
           >
             Done
           </button>
@@ -228,7 +229,7 @@ function CaptureScreen() {
   if (stage === 'released') {
     return (
       <div className="flex flex-1 flex-col justify-center py-16">
-        <h1 className="font-serif text-2xl text-ink">Let go.</h1>
+        <h1 className="font-display text-3xl font-bold tracking-tight text-ink">Let go.</h1>
         <p className="mt-4 text-sm leading-relaxed text-ink-soft">
           It was never uploaded, so there is nothing left to delete. It is still on this screen,
           if you did not mean to.
@@ -237,14 +238,14 @@ function CaptureScreen() {
           <button
             type="button"
             onClick={leaveForGood}
-            className="rounded-xl border border-transparent bg-ink px-6 py-4 text-paper"
+            className="rounded-full bg-ink px-6 py-4 text-paper"
           >
             Done
           </button>
           <button
             type="button"
             onClick={bringItBack}
-            className="rounded-xl border border-field px-6 py-4 text-ink"
+            className="rounded-full border border-field px-6 py-4 text-ink"
           >
             Bring it back
           </button>
@@ -258,7 +259,7 @@ function CaptureScreen() {
     // saving everywhere automatically.
     return (
       <div className="flex flex-1 flex-col justify-center py-16">
-        <h1 className="font-serif text-2xl text-ink">What do you want to do with this?</h1>
+        <h1 className="font-display text-3xl font-bold tracking-tight text-ink">What do you want to do with this?</h1>
         <p role="alert" className="mt-4 text-sm text-ember empty:hidden">
           {error}
         </p>
@@ -272,7 +273,7 @@ function CaptureScreen() {
             type="button"
             onClick={keepPrivately}
             disabled={stage === 'saving'}
-            className="rounded-xl border border-transparent bg-ink px-6 py-4 text-paper disabled:cursor-not-allowed disabled:border-field disabled:bg-transparent disabled:text-ink-faint"
+            className="rounded-full bg-ink px-6 py-4 text-paper disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-faint"
           >
             {stage === 'saving' ? 'Encrypting…' : 'Keep it privately'}
           </button>
@@ -280,7 +281,7 @@ function CaptureScreen() {
             type="button"
             onClick={release}
             disabled={stage === 'saving'}
-            className="rounded-xl border border-field px-6 py-4 text-ink"
+            className="rounded-full border border-field px-6 py-4 text-ink"
           >
             Let it go
           </button>
@@ -339,15 +340,32 @@ function CaptureScreen() {
         </div>
       ) : (
         <div className="flex flex-1 flex-col">
-          {guided && <p className="mb-4 font-serif text-lg text-ink-soft">{prompt}</p>}
-          <textarea
-            value={text}
-            onChange={(event) => setText(event.target.value)}
-            placeholder="Say anything."
-            autoFocus
-            className="flex-1 resize-none border-none bg-transparent text-lg leading-relaxed text-ink outline-none placeholder:text-ink-faint"
-          />
-          <div className="flex gap-3 py-6">
+          {guided && <p className="mb-4 font-serif text-xl italic text-ink-soft">{prompt}</p>}
+          {/* The card carries focus, so the text never sits inside a hard outline. */}
+          <div className="flex flex-1 flex-col rounded-3xl border border-line bg-paper-raised shadow-[0_30px_60px_-45px_rgba(26,20,16,0.5)] transition-shadow focus-within:border-field focus-within:shadow-[0_0_0_4px_var(--color-brand-wash),0_30px_60px_-45px_rgba(26,20,16,0.5)]">
+            <div className="flex items-center justify-between border-b border-line px-5 py-3 text-xs text-ink-faint sm:px-7">
+              <span>
+                {new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Icon name="lock" size={13} strokeWidth={2} className="text-brand-strong" />
+                Encrypted before it leaves this device
+              </span>
+            </div>
+            <textarea
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+              placeholder="Say anything."
+              aria-label="What is on your mind"
+              autoFocus
+              className="min-h-[45dvh] flex-1 resize-none border-none bg-transparent bg-[linear-gradient(transparent_calc(2rem-1px),var(--color-line)_calc(2rem-1px))] bg-[length:100%_2rem] bg-local px-5 pt-1 font-serif text-xl leading-[2rem] text-ink outline-none placeholder:text-ink-faint focus-visible:outline-none sm:px-7"
+            />
+            <div className="flex items-center justify-between border-t border-line px-5 py-2.5 text-xs text-ink-faint sm:px-7">
+              <span>{text.trim() ? text.trim().split(/\s+/).length : 0} words</span>
+              <span>Nothing is saved until you choose</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 py-6">
             <button
               type="button"
               onClick={() => {
@@ -359,11 +377,11 @@ function CaptureScreen() {
                 setStage('deciding');
               }}
               disabled={text.trim().length === 0}
-              className="rounded-xl border border-transparent bg-ink px-6 py-3 text-paper disabled:cursor-not-allowed disabled:border-field disabled:bg-transparent disabled:text-ink-faint"
+              className="rounded-full bg-ink px-7 py-3 font-medium text-paper transition-colors hover:bg-night-raised disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-faint"
             >
               Done
             </button>
-            <button type="button" onClick={release} className="px-6 py-3 text-sm text-ink-faint">
+            <button type="button" onClick={release} className="rounded-full px-5 py-3 text-sm text-ink-soft hover:bg-paper-tint">
               Discard
             </button>
           </div>

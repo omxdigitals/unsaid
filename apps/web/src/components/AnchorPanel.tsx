@@ -129,7 +129,7 @@ function AnchorAction({
         type="button"
         onClick={anchor}
         disabled={busy}
-        className="mt-4 rounded-lg border border-transparent bg-ink px-5 py-2.5 text-sm text-paper disabled:cursor-not-allowed disabled:border-field disabled:bg-transparent disabled:text-ink-faint"
+        className="mt-4 rounded-full bg-ink px-5 py-2.5 text-sm text-paper disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-faint"
       >
         {confirming ? 'Approve in your wallet…' : busy ? 'Preparing…' : 'Anchor on Solana'}
       </button>

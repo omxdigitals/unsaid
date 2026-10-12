@@ -29,7 +29,7 @@ export function VisibilityLedger() {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <section className="rounded-2xl border border-caution bg-caution-wash p-5 sm:p-6">
-        <h3 className="font-serif text-lg text-ink">What we can see</h3>
+        <h3 className="font-display text-lg font-semibold text-ink">What we can see</h3>
         <p className="mt-1 text-sm text-caution">
           The complete list. There is nothing below this.
         </p>
@@ -44,7 +44,7 @@ export function VisibilityLedger() {
       </section>
 
       <section className="rounded-2xl border border-safe bg-safe-wash p-5 sm:p-6">
-        <h3 className="font-serif text-lg text-ink">What we cannot</h3>
+        <h3 className="font-display text-lg font-semibold text-ink">What we cannot</h3>
         <p className="mt-1 text-sm text-safe">
           Not by policy — we built it so that we are unable to.
         </p>

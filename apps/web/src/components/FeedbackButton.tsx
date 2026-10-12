@@ -96,21 +96,21 @@ export function FeedbackButton({ screen }: { screen: FeedbackScreen }) {
       >
         {state === 'sent' ? (
           <>
-            <h2 className="font-serif text-xl text-ink">Thank you — that helps.</h2>
+            <h2 className="font-display text-xl font-bold text-ink">Thank you — that helps.</h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-soft">
               We know which screen you were on and nothing about what you wrote there.
             </p>
             <button
               type="button"
               onClick={close}
-              className="mt-6 rounded-lg bg-ink px-5 py-2.5 text-sm text-paper"
+              className="mt-6 rounded-full bg-ink px-5 py-2.5 text-sm text-paper"
             >
               Close
             </button>
           </>
         ) : (
           <form onSubmit={submit}>
-            <h2 className="font-serif text-xl text-ink">What felt off?</h2>
+            <h2 className="font-display text-xl font-bold text-ink">What felt off?</h2>
 
             <div className="mt-5 flex flex-col gap-2">
               {SENTIMENTS.map((option) => (
@@ -136,7 +136,7 @@ export function FeedbackButton({ screen }: { screen: FeedbackScreen }) {
                 onChange={(event) => setMessage(event.target.value)}
                 rows={3}
                 maxLength={1000}
-                className="mt-2 w-full resize-none rounded-lg border border-field bg-paper px-3 py-2 text-sm text-ink outline-none focus:border-ember"
+                className="mt-2 w-full resize-none rounded-xl border border-field bg-paper px-3 py-2 text-sm text-ink outline-none focus:border-brand-strong focus:shadow-[0_0_0_4px_var(--color-brand-wash)] focus-visible:outline-none"
               />
             </label>
 
@@ -153,7 +153,7 @@ export function FeedbackButton({ screen }: { screen: FeedbackScreen }) {
               <button
                 type="submit"
                 disabled={!sentiment || state === 'sending'}
-                className="rounded-lg border border-transparent bg-ink px-5 py-2.5 text-sm text-paper disabled:cursor-not-allowed disabled:border-field disabled:bg-transparent disabled:text-ink-faint"
+                className="rounded-full bg-ink px-5 py-2.5 text-sm text-paper disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-faint"
               >
                 {state === 'sending' ? 'Sending…' : 'Send'}
               </button>

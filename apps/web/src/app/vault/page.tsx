@@ -44,11 +44,11 @@ function VaultList() {
   if (thoughts.length === 0) {
     return (
       <div className="flex flex-1 flex-col justify-center py-16">
-        <h1 className="font-serif text-2xl text-ink">Nothing here yet.</h1>
+        <h1 className="font-display text-3xl font-bold tracking-tight text-ink">Nothing here yet.</h1>
         <p className="mt-3 text-sm text-ink-soft">
           Whatever you keep will appear here, readable only on a device holding your phrase.
         </p>
-        <Link href="/app" className="mt-8 self-start rounded-xl bg-ink px-6 py-3 text-paper">
+        <Link href="/app" className="mt-8 self-start rounded-full bg-ink px-6 py-3 text-paper hover:opacity-90">
           Say something
         </Link>
       </div>
@@ -57,38 +57,71 @@ function VaultList() {
 
   return (
     <div className="py-8">
-      <h1 className="font-serif text-2xl text-ink">Your vault</h1>
+      <h1 className="font-display text-3xl font-bold tracking-tight text-ink">Your vault</h1>
       <p className="mt-2 text-sm text-ink-soft">
         {thoughts.length} {thoughts.length === 1 ? 'memory' : 'memories'}, encrypted.
       </p>
 
       {token && key && <VaultSearch thoughts={thoughts} token={token} vaultKey={key} />}
 
-      <ul className="mt-8 divide-y divide-line border-t border-line">
-        {thoughts.map((thought) => (
-          <li key={thought.id}>
-            <Link
-              href={`/vault/${thought.id}`}
-              className="flex items-baseline justify-between py-5 hover:opacity-70"
-            >
-              <span className="text-ink">
-                {new Date(thought.createdAt).toLocaleDateString(undefined, {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}
+      {/* Grouped by month, each with its own "edition" header. Still no previews. */}
+      <div className="mt-8 flex flex-col gap-10">
+        {byMonth(thoughts).map(([month, items]) => (
+          <section key={month}>
+            <h2 className="flex items-baseline justify-between border-b-[3px] border-rule pb-2">
+              <span className="font-display text-xl font-bold text-ink">{month}</span>
+              <span className="kicker !text-ink-faint">
+                {items.length} {items.length === 1 ? 'entry' : 'entries'}
               </span>
-              <span className="text-xs text-ink-faint">
-                {thought.type === 'audio' ? 'Voice' : 'Written'} ·{' '}
-                {new Date(thought.createdAt).toLocaleTimeString(undefined, {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </span>
-            </Link>
-          </li>
+            </h2>
+            <ul className="divide-y divide-line">
+              {items.map((thought) => (
+                <li key={thought.id}>
+                  <Link
+                    href={`/vault/${thought.id}`}
+                    className="group flex items-center justify-between gap-4 py-4"
+                  >
+                    <span className="flex items-baseline gap-4">
+                      <span className="w-8 font-display text-2xl font-black text-brand-display">
+                        {new Date(thought.createdAt).getDate()}
+                      </span>
+                      <span className="text-ink group-hover:text-brand-strong">
+                        {new Date(thought.createdAt).toLocaleDateString(undefined, {
+                          weekday: 'long',
+                        })}
+                      </span>
+                    </span>
+                    <span className="flex items-center gap-2 text-xs text-ink-faint">
+                      <span className="rounded-full border border-line px-2 py-0.5">
+                        {thought.type === 'audio' ? 'Voice' : 'Written'}
+                      </span>
+                      {new Date(thought.createdAt).toLocaleTimeString(undefined, {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
         ))}
-      </ul>
+      </div>
     </div>
   );
+}
+
+/** Newest month first, keeping the list's own order inside each month. */
+function byMonth(thoughts: ThoughtMetadata[]): [string, ThoughtMetadata[]][] {
+  const groups = new Map<string, ThoughtMetadata[]>();
+  for (const thought of thoughts) {
+    const month = new Date(thought.createdAt).toLocaleDateString(undefined, {
+      month: 'long',
+      year: 'numeric',
+    });
+    const group = groups.get(month);
+    if (group) group.push(thought);
+    else groups.set(month, [thought]);
+  }
+  return [...groups];
 }

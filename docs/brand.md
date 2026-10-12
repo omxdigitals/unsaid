@@ -26,38 +26,50 @@ do not add a gradient, and do not set the wordmark in the sans.
 
 ## Palette
 
-From the OMX Lab sunset-over-water set. The cool half carries the interface; the
-warm half is rationed.
+The orange edition: a newspaper front page in cream newsprint and warm-black
+ink, with orange from the OMX Lab Coral scale as the one loud colour. There is
+no blue or teal anywhere. One theme only — see below.
 
-| Token | Light | Dark | Role |
-|---|---|---|---|
-| `ink` | `#1F4A52` deep sea | `#EDE7E0` | Body type, buttons |
-| `ink-soft` | `#445D58` slate green | `#B9C4C6` | Secondary type |
-| `ink-faint` | `#54706A` | `#8FA3A3` | Captions, footnotes |
-| `paper` | `#EFEAE4` | `#12262B` | Ground |
-| `paper-raised` | `#F7F4EF` | `#193238` | Inputs, cards |
-| `line` | `#CACCC4` mist | `#2C4249` | Rules |
-| `field` | `#6C8880` | `#758F87` | Control borders |
-| `ember` | `#B14A24` | `#FFBC9B` peach | Errors, focus |
-| `accent` | `#FF7540` coral | `#FF7540` | The dot in the mark. Never type |
+| Token | Value | Role |
+|---|---|---|
+| `paper` / `paper-raised` / `paper-tint` | `#F8F5EF` / `#FFFFFF` / `#F1EBE2` | Ground, cards, bands |
+| `ink` / `ink-soft` / `ink-faint` | `#1A1410` / `#57483F` / `#6B5B50` | Type (16.8 / 8.0 / 6.0 : 1) |
+| `line` / `rule` / `field` | `#E4DCD2` / `#1A1410` / `#8A786C` | Hairlines, heavy rules, control borders |
+| `brand` | `#FF7942` Coral 500 | Fills. The label on it is ink (7.0:1) |
+| `brand-bright` | `#D16336` Coral 600 | Hover fill, ink label (4.8:1) |
+| `brand-strong` | `#C2410C` | Orange **text** and links (4.8:1) |
+| `brand-display` | `#E8571F` | Headline words, 24px and up only (3.3:1) |
+| `brand-wash` / `accent-wash` | `#FFE7DD` / `#FFCFBB` | Icon tiles; the highlighter |
+| `night` / `night-raised` / `night-line` | `#1A1410` / `#2A211B` / `#3D3229` | The on-chain band and footer |
+| `ember` | `#B42318` | Errors — red, so it never reads as brand |
+| `safe` / `caution` | `#2F6B3A` / `#A34D2A` | Privacy Centre: sealed vs visible |
 
-Two light values are darker than the swatch they came from: `ink-faint` and
-`ember` both sit at 4.5:1 on paper rather than the 2.9:1 and 2.2:1 the raw
-swatches gave. `field` clears 3:1, which is the floor for a control border. If
-you add a colour, check it against paper before you commit it.
+Coral 500 as text is 2.4:1 and is never used that way — that is the reason
+`brand` and `brand-strong` are separate tokens.
 
-Coral is bright enough to be used badly. It is not a call-to-action colour here:
-the buttons are deep sea, and the product deliberately has no accent-coloured
-CTAs — someone using this at 2am does not need to be sold to.
+Type: Archivo at heavy weights for headlines, Fraunces for the nameplate and
+wordmark (still a serif), Inter for the interface, JetBrains Mono for
+ciphertext and hashes. All self-hosted by `next/font`.
+
+Icons: `src/components/Icon.tsx`, one inline-SVG set at one stroke weight. No
+emoji anywhere in the product or the deck.
+
+Visuals are drawn in code (`src/components/visuals/`): a phone running the
+real flow, and a block-explorer view of the consent ledger under the real
+program id. No stock photography, so the page makes no request to an image
+host.
+
+**Loudness is rationed by surface.** Marketing pages and the deck get orange
+buttons and the highlighter. Inside the vault buttons are ink and there is no
+highlighter.
 
 ## Themes
 
-Both palettes live in `apps/web/src/app/globals.css`. The light one is a Tailwind
-`@theme` block; the dark one is a plain `:root` override inside a
-`prefers-color-scheme` media query.
+There is one theme, a Tailwind `@theme` block in
+`apps/web/src/app/globals.css`, and `color-scheme: light` on the root.
 
-That asymmetry is deliberate and load-bearing. Tailwind v4 hoists **every**
-`@theme` block to the root and the last one wins, regardless of any media query
-wrapping it — so a nested dark `@theme` does not conditionally override the
-light palette, it replaces it for everyone. That was the previous state of this
-file, and it meant the light theme had never rendered for a single visitor.
+If a dark theme ever comes back, do not nest a second `@theme` inside a
+`prefers-color-scheme` media query. Tailwind v4 hoists **every** `@theme` block
+to the root and the last one wins, so a nested dark block replaces the light
+palette for everyone. Override plain custom properties on `:root` inside the
+media query instead — that is how the retired dark palette was wired.

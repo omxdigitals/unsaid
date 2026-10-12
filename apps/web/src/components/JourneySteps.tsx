@@ -96,7 +96,7 @@ export function JourneySteps() {
         >
           {onDevice ? 'Happens on your device' : 'Happens on our servers'}
         </p>
-        <h3 className="mt-2 font-serif text-xl text-ink sm:text-2xl">{step.title}</h3>
+        <h3 className="mt-2 font-display text-xl font-bold text-ink sm:text-2xl">{step.title}</h3>
         <p className="mt-3 leading-relaxed text-ink">{step.body}</p>
         <p className="mt-3 border-t border-line pt-3 text-sm leading-relaxed text-ink-soft">
           {step.detail}

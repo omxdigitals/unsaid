@@ -75,7 +75,7 @@ export function AccessLog({
   if (items.length === 0) {
     return (
       <div className="flex flex-1 flex-col justify-center py-16">
-        <h1 className="font-serif text-2xl text-ink">Nothing has ever opened a memory.</h1>
+        <h1 className="font-display text-3xl font-bold tracking-tight text-ink">Nothing has ever opened a memory.</h1>
         <p className="mt-3 max-w-prose text-sm leading-relaxed text-ink-soft">
           Not us, not anything we use. If that ever changes, it will appear here — and on a public
           ledger we cannot edit, so this page is not the only place you can check.
@@ -89,7 +89,7 @@ export function AccessLog({
 
   return (
     <div className="py-8">
-      <h1 className="font-serif text-2xl text-ink">What has touched your memories</h1>
+      <h1 className="font-display text-3xl font-bold tracking-tight text-ink">What has touched your memories</h1>
       <p className="mt-2 max-w-prose text-sm leading-relaxed text-ink-soft">
         {items.length} {items.length === 1 ? 'access' : 'accesses'}. Each one was written to Solana
         when it happened. Check any of them and this page reads the record straight from the chain —

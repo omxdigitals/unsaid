@@ -50,14 +50,14 @@ export function RecoveryKit({
 
   return (
     <div className="flex flex-1 flex-col justify-center py-12">
-      <h1 className="font-serif text-2xl text-ink">Save this before you go any further</h1>
+      <h1 className="font-display text-3xl font-bold tracking-tight text-ink">Save this before you go any further</h1>
 
       <p className="mt-3 text-sm leading-relaxed text-ink-soft">
         This is the only way back into your vault if you forget your phrase. We do not have a copy.
         We cannot email it to you, reset it, or recover your memories without it.
       </p>
 
-      <pre className="mt-6 overflow-x-auto rounded-xl border border-line bg-paper-raised p-5 font-mono text-xs leading-relaxed text-ink">
+      <pre className="mt-6 overflow-x-auto rounded-2xl border border-line bg-paper-raised p-5 font-mono text-xs leading-relaxed text-ink">
         {kit}
       </pre>
 
@@ -65,14 +65,14 @@ export function RecoveryKit({
         <button
           type="button"
           onClick={download}
-          className="rounded-lg bg-ink px-5 py-2.5 text-sm text-paper"
+          className="rounded-full bg-ink px-5 py-2.5 text-sm text-paper"
         >
           Download it
         </button>
         <button
           type="button"
           onClick={copy}
-          className="rounded-lg border border-field px-5 py-2.5 text-sm text-ink"
+          className="rounded-full border border-ink px-5 py-2.5 text-sm text-ink transition-colors hover:bg-paper-tint"
         >
           {copyState === 'copied' ? 'Copied' : 'Copy it'}
         </button>
@@ -102,7 +102,7 @@ export function RecoveryKit({
         type="button"
         onClick={onAcknowledged}
         disabled={!confirmed || !saved}
-        className="mt-6 self-start rounded-lg border border-transparent bg-ink px-6 py-3 text-paper transition-colors disabled:cursor-not-allowed disabled:border-field disabled:bg-transparent disabled:text-ink-faint"
+        className="mt-6 self-start rounded-full bg-ink px-7 py-3 font-medium text-paper transition-colors hover:bg-night-raised disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-faint"
       >
         Continue
       </button>

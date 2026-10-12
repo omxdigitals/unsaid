@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { JourneySteps } from '@/components/JourneySteps';
 import { LiveSeal } from '@/components/LiveSeal';
+import { PhalaFlow } from '@/components/scenes/PhalaFlow';
 import { Shell } from '@/components/Shell';
 import { VisibilityLedger } from '@/components/VisibilityLedger';
 
@@ -37,9 +38,12 @@ const COSTS = [
 
 export default function PrivacyPage() {
   return (
-    <Shell screen="privacy">
+    <Shell screen="privacy" aside={false}>
       <div className="py-6 sm:py-8">
-        <h1 className="font-serif text-2xl text-ink sm:text-3xl">How this actually works</h1>
+        <p className="kicker">Privacy centre · By design, not by policy</p>
+        <h1 className="mt-3 font-display text-4xl font-black leading-tight tracking-tight text-ink sm:text-5xl">
+          How this actually works
+        </h1>
         <p className="mt-3 max-w-prose leading-relaxed text-ink-soft">
           A privacy promise you cannot check is not worth much. So rather than describe the
           encryption, this page runs it on your own words — and rather than summarise what we can
@@ -50,8 +54,23 @@ export default function PrivacyPage() {
           <LiveSeal />
         </div>
 
+        <section className="mt-12 border-t-[3px] border-rule pt-8">
+          <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">
+            When Echo reflects on a memory
+          </h2>
+          <p className="mt-3 max-w-prose leading-relaxed text-ink-soft">
+            A language model cannot reflect on words it cannot read, so this is the one moment a
+            memory is readable outside your phone. On the attested path it is read inside a
+            sealed chip that signs what code it ran — and the receipt says so. A receipt also
+            says when an access was not attested; the two can never look the same.
+          </p>
+          <div className="mt-7">
+            <PhalaFlow autoplay />
+          </div>
+        </section>
+
         <section className="mt-12 border-t border-line pt-8">
-          <h2 className="font-serif text-xl text-ink sm:text-2xl">Where each step happens</h2>
+          <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">Where each step happens</h2>
           <p className="mt-3 max-w-prose leading-relaxed text-ink-soft">
             Only two of these five touch our servers, and neither sees a readable word.
           </p>
@@ -61,7 +80,7 @@ export default function PrivacyPage() {
         </section>
 
         <section className="mt-12 border-t border-line pt-8">
-          <h2 className="font-serif text-xl text-ink sm:text-2xl">What we can see</h2>
+          <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">What we can see</h2>
           <p className="mt-3 max-w-prose leading-relaxed text-ink-soft">
             Both lists are complete. There is no column in our database for a title, a
             transcript, a mood or a tag — not an empty one, not a hidden one, and a build that
@@ -73,7 +92,7 @@ export default function PrivacyPage() {
         </section>
 
         <section className="mt-12 border-t border-line pt-8">
-          <h2 className="font-serif text-xl text-ink sm:text-2xl">
+          <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">
             What this costs you, stated plainly
           </h2>
           <p className="mt-3 max-w-prose leading-relaxed text-ink-soft">
@@ -85,7 +104,7 @@ export default function PrivacyPage() {
                 key={item.title}
                 className="rounded-2xl border border-line bg-paper-raised p-5"
               >
-                <h3 className="text-base text-ink">{item.title}</h3>
+                <h3 className="font-display text-lg font-bold text-ink">{item.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">{item.body}</p>
               </div>
             ))}
@@ -93,7 +112,7 @@ export default function PrivacyPage() {
         </section>
 
         <section className="mt-12 border-t border-line pt-8">
-          <h2 className="font-serif text-xl text-ink sm:text-2xl">Check it without asking us</h2>
+          <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">Check it without asking us</h2>
           <p className="mt-3 max-w-prose leading-relaxed text-ink-soft">
             Every access to a memory writes a content-free receipt to a public ledger we cannot
             edit. You can read those receipts straight from the chain, with none of our servers
@@ -101,7 +120,7 @@ export default function PrivacyPage() {
           </p>
           <Link
             href="/verify"
-            className="mt-5 inline-block rounded-xl border border-field px-5 py-3 text-sm text-ink hover:border-ink"
+            className="mt-5 inline-block rounded-full bg-brand px-5 py-3 text-sm font-medium text-on-brand hover:bg-brand-bright"
           >
             Open the verifier
           </Link>

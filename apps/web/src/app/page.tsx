@@ -1,238 +1,425 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { JourneySteps } from '@/components/JourneySteps';
+import { Icon, type IconName } from '@/components/Icon';
 import { LiveSeal } from '@/components/LiveSeal';
-import { Logo } from '@/components/Logo';
 import { VisibilityLedger } from '@/components/VisibilityLedger';
 import { WaitlistForm } from '@/components/WaitlistForm';
+import { ButtonLink, Kicker, Marker, Masthead } from '@/components/editorial';
+import { ResearchGrid } from '@/components/research/Research';
+import { ExplorerMock, PROGRAM_ID } from '@/components/visuals/ExplorerMock';
+import { PhoneMockup } from '@/components/visuals/PhoneMockup';
 
 /**
- * The landing page.
+ * The landing page, set as a front page.
  *
- * Blueprint §24.1: lead with the human problem, not the blockchain. The
- * ownership story only lands once someone already wants the thing, so Solana
- * appears once, low on the page, as a trust detail rather than a headline.
- *
- * This page used to make its case in prose, which asked a visitor to believe
- * six paragraphs. It now makes the same case by running the encryption on
- * their own sentence, by letting them click through the five steps, and by
- * putting what we can see beside what we cannot. The claims are unchanged —
- * only the amount of reading required to check them.
+ * It leads with the human problem, then shows the product on a phone, then
+ * the chain — because the chain is what turns "we promise" into "check it".
+ * Every number is from docs/paper/benchmarks.md and says whether it was
+ * measured. The visuals are drawn in code, not photographs, so they stay sharp
+ * at any size and the page makes no request to an image host.
  */
 export const metadata: Metadata = {
-  title: 'UNSAID — a private place for the things you cannot say out loud',
+  title: 'UNSAID — private journaling, proven on Solana',
   description:
-    'Speak, write, reflect, or let it go. Encrypted on your device before it reaches us. We cannot read what you write here.',
-  // The app itself is noindex; this page is the one that should be found.
+    'Write or speak the things you cannot say out loud. Encrypted on your device, reflected on by an AI that cannot leak it, with a receipt on Solana for every access.',
   robots: { index: true, follow: true },
 };
 
+const STACK = ['Solana', 'Anchor', 'Phala Network', 'Intel TDX', 'AES-256-GCM', 'WebCrypto'];
+
+const STEPS: { icon: IconName; title: string; body: string }[] = [
+  {
+    icon: 'lock',
+    title: 'Sealed on your phone',
+    body: 'Every word is encrypted on your device with AES-256-GCM before it leaves. We only ever receive noise.',
+  },
+  {
+    icon: 'cpu',
+    title: 'Reflected on in a sealed chip',
+    body: 'Ask Echo for a reflection and it runs inside a hardware enclave that signs what code it ran.',
+  },
+  {
+    icon: 'block',
+    title: 'Receipted on Solana',
+    body: 'Each access writes a 212-byte, content-free receipt to a public ledger nobody can quietly edit.',
+  },
+];
+
+const FEATURES: { icon: IconName; term: string; detail: string }[] = [
+  {
+    icon: 'mic',
+    term: 'Speak or write, immediately',
+    detail: 'One tap to talk, one to write. No title, no tags, nothing to fill in before you have said anything.',
+  },
+  {
+    icon: 'sparkle',
+    term: 'A reflection, not a lecture',
+    detail: 'Echo responds to one memory at a time, only when you ask, and only after you have read what that means.',
+  },
+  {
+    icon: 'key',
+    term: 'Your phrase is the only key',
+    detail: 'Unlocking takes about four tenths of a second. We cannot reset it, because we never had it.',
+  },
+  {
+    icon: 'download',
+    term: 'Leave with everything',
+    detail: 'One button exports every word, decrypted, as ordinary files that open without us on any computer.',
+  },
+  {
+    icon: 'x',
+    term: 'Forget for real',
+    detail: 'Forgetting destroys the key first, so even a surviving backup is unreadable noise — including to us.',
+  },
+  {
+    icon: 'search',
+    term: 'Audit every access',
+    detail: 'An access log with the matching on-chain receipt beside each entry, so our story can be checked.',
+  },
+];
+
+const NAV = [
+  { href: '#how', label: 'How it works' },
+  { href: '#chain', label: 'On-chain' },
+  { href: '/research', label: 'Research' },
+  { href: '/verify', label: 'Verify' },
+] as const;
+
 export default function LandingPage() {
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-5 sm:px-6">
-      {/* Stacks under `sm`: the wordmark and three links do not fit one line on a phone. */}
-      <header className="flex flex-col gap-3 py-6 sm:flex-row sm:items-baseline sm:justify-between sm:py-8">
-        <Logo withWordmark className="self-start text-ink" />
-        <nav aria-label="Primary" className="flex gap-5 text-sm text-ink-soft sm:gap-6">
-          <Link href="/privacy" className="hover:text-ink">
-            How it works
-          </Link>
-          <Link href="/verify" className="hover:text-ink">
-            Verify
-          </Link>
-          <Link href="/app" className="hover:text-ink">
-            Open my vault
-          </Link>
-        </nav>
-      </header>
+    <div className="min-h-dvh bg-paper">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-8">
+        <Masthead
+          nav={
+            <nav aria-label="Primary" className="flex items-center gap-4 text-sm text-ink-soft sm:gap-6">
+              {NAV.map(({ href, label }) => (
+                <Link key={href} href={href} className="hidden hover:text-brand-strong sm:inline">
+                  {label}
+                </Link>
+              ))}
+              <Link href="/verify" className="hover:text-brand-strong sm:hidden">
+                Verify
+              </Link>
+              <ButtonLink href="/app" className="!px-4 !py-2">
+                Open the app
+              </ButtonLink>
+            </nav>
+          }
+          dateline={
+            <>
+              <span>Vol. 1 · The encrypted edition</span>
+              <span className="hidden md:inline">Built on Solana · Live on devnet</span>
+              <span className="hidden sm:inline">No account · No email · No audience</span>
+            </>
+          }
+        />
+      </div>
 
-      <main className="flex flex-1 flex-col">
-        <section className="py-10 sm:py-14">
-          <h1 className="max-w-[18ch] font-serif text-[2rem] leading-[1.15] text-ink sm:text-4xl">
-            Not every thought needs an audience.
-          </h1>
-          <p className="mt-5 max-w-prose leading-relaxed text-ink-soft sm:mt-6 sm:text-lg">
-            Sometimes it only needs somewhere to exist. UNSAID is a private place to say the
-            things you would rather not say out loud — to anyone.
-          </p>
+      <main>
+        {/* ── Lead story ─────────────────────────────────────────────── */}
+        <section className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 pb-14 pt-10 sm:px-8 sm:pt-14 lg:grid-cols-[1.15fr_1fr] lg:gap-8 lg:pb-20">
+          <div className="animate-rise">
+            <span className="inline-flex items-center gap-2 rounded-full border border-line bg-paper-raised px-3 py-1.5 text-xs font-medium text-ink">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-brand opacity-60" />
+                <span className="relative inline-flex size-2 rounded-full bg-brand" />
+              </span>
+              Live on Solana devnet
+            </span>
+            <h1 className="mt-6 font-display text-[clamp(2.6rem,7.5vw,5rem)] font-black leading-[0.98] tracking-tight text-ink">
+              Not every thought needs an{' '}
+              <span className="text-brand-display">
+                <Marker>audience.</Marker>
+              </span>
+            </h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft sm:text-xl">
+              A private journal with an AI that can&rsquo;t read your secrets — and a receipt on
+              Solana for every time anything touches them.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <ButtonLink href="/app" size="lg">
+                Start writing
+                <Icon name="arrowRight" size={18} strokeWidth={2.2} />
+              </ButtonLink>
+              <ButtonLink href="/verify" variant="quiet" size="lg">
+                Verify a receipt
+              </ButtonLink>
+            </div>
+            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t-[3px] border-rule pt-5">
+              {[
+                ['0', 'plaintext we hold'],
+                ['212 B', 'per on-chain receipt'],
+                ['0.4 s', 'to unlock'],
+              ].map(([v, l]) => (
+                <div key={l}>
+                  <dt className="sr-only">{l}</dt>
+                  <dd className="font-display text-2xl font-black text-ink sm:text-3xl">{v}</dd>
+                  <dd className="text-xs text-ink-faint">{l}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
 
-          <div className="mt-8 flex flex-wrap items-center gap-4 sm:mt-10">
-            <Link
-              href="/app"
-              className="rounded-xl bg-ink px-7 py-4 text-lg text-paper hover:opacity-90"
-            >
-              Say something
-            </Link>
-            <span className="text-sm text-ink-faint">No account. No email. No audience.</span>
+          <div className="relative py-6 [animation-delay:150ms] animate-rise">
+            {/* Halftone sun behind the phone — the newspaper's printing dots, in orange. */}
+            <div
+              aria-hidden="true"
+              className="absolute left-1/2 top-1/2 size-[min(30rem,92vw)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(var(--color-brand)_1.4px,transparent_1.6px)] [background-size:12px_12px] opacity-40 [mask-image:radial-gradient(circle,black_35%,transparent_70%)]"
+            />
+            <PhoneMockup />
           </div>
         </section>
 
-        {/* The proof, before the prose. Everything below is elaboration on this. */}
-        <section className="border-t border-line py-10 sm:py-12">
-          <LiveSeal />
+        {/* ── Built with ─────────────────────────────────────────────── */}
+        <section aria-label="Built with" className="border-y border-line bg-paper-raised">
+          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-center gap-x-8 gap-y-3 px-4 py-5 sm:justify-between sm:px-8">
+            <span className="kicker !text-ink-faint">Built with</span>
+            {STACK.map((name) => (
+              <span key={name} className="font-display text-sm font-bold tracking-tight text-ink-soft sm:text-base">
+                {name}
+              </span>
+            ))}
+          </div>
         </section>
 
-        <section className="border-t border-line py-10 sm:py-12">
-          <h2 className="font-serif text-xl text-ink sm:text-2xl">You do not always need advice</h2>
-          <p className="mt-4 max-w-prose leading-relaxed text-ink-soft">
-            There is a moment — usually late — when something needs to come out, but you are not
-            sure you want a conversation about it. Messaging a friend asks them to carry it.
-            Posting invites an audience. A blank document asks you to organise thoughts you have
-            not organised yet.
-          </p>
-          <p className="mt-4 max-w-prose leading-relaxed text-ink-soft">
-            So you say nothing, and it stays with you.
-          </p>
+        {/* ── How it works ───────────────────────────────────────────── */}
+        <section id="how" className="mx-auto w-full max-w-6xl scroll-mt-6 px-4 py-16 sm:px-8 sm:py-24">
+          <div className="max-w-2xl">
+            <Kicker>How it works</Kicker>
+            <h2 className="mt-3 font-display text-[clamp(2rem,4.5vw,3.25rem)] font-black leading-tight tracking-tight text-ink">
+              Privacy you can <span className="text-brand-display">check</span>, not just trust.
+            </h2>
+          </div>
+          <ol className="mt-12 grid gap-6 md:grid-cols-3">
+            {STEPS.map((step, i) => (
+              <li
+                key={step.title}
+                className="group relative rounded-3xl border border-line bg-paper-raised p-7 transition-shadow hover:shadow-[0_24px_48px_-28px_rgba(26,20,16,0.4)]"
+              >
+                <span className="absolute right-6 top-5 font-display text-5xl font-black text-paper-tint">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="grid size-12 place-items-center rounded-2xl bg-brand text-on-brand">
+                  <Icon name={step.icon} size={24} strokeWidth={2} />
+                </span>
+                <h3 className="mt-6 font-display text-xl font-bold text-ink">{step.title}</h3>
+                <p className="mt-2 leading-relaxed text-ink-soft">{step.body}</p>
+              </li>
+            ))}
+          </ol>
         </section>
 
-        <section className="border-t border-line py-10 sm:py-12">
-          <h2 className="font-serif text-xl text-ink sm:text-2xl">
-            What happens to one sentence
+        {/* ── On-chain band ──────────────────────────────────────────── */}
+        <section id="chain" className="scroll-mt-0 bg-night text-paper">
+          <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-16 sm:px-8 sm:py-24 lg:grid-cols-[1fr_1.15fr]">
+            <div>
+              <p className="kicker !text-brand">On-chain · Solana</p>
+              <h2 className="mt-3 font-display text-[clamp(2rem,4.5vw,3.25rem)] font-black leading-tight tracking-tight">
+                Every access leaves a receipt. <span className="text-brand">None of them hold a word.</span>
+              </h2>
+              <p className="mt-5 max-w-lg leading-relaxed text-[#d9cfc6]">
+                An Anchor program on Solana records who accessed a memory, under which consent, in
+                which enclave, and a hash of the reply — never the memory itself. It is the one
+                record we cannot edit after the fact, which is exactly why it is there.
+              </p>
+
+              <div className="mt-8">
+                <div className="flex justify-between text-xs text-[#a8988b]">
+                  <span>One receipt, in one Solana transaction</span>
+                  <span>212 of 1,232 bytes</span>
+                </div>
+                <div className="mt-2 h-3 overflow-hidden rounded-full bg-night-raised">
+                  <div className="h-full w-[17.2%] rounded-full bg-brand" />
+                </div>
+              </div>
+
+              <div className="mt-8 rounded-2xl border border-night-line bg-night-raised p-4">
+                <p className="text-xs text-[#a8988b]">Program id · devnet</p>
+                <p className="mt-1 break-all font-mono text-sm text-paper">{PROGRAM_ID}</p>
+              </div>
+
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/verify"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 font-medium text-on-brand transition-colors hover:bg-brand-bright"
+                >
+                  <Icon name="search" size={18} strokeWidth={2} />
+                  Verify a receipt yourself
+                </Link>
+                <a
+                  href={`https://explorer.solana.com/address/${PROGRAM_ID}?cluster=devnet`}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[#6b5b50] px-6 py-3 font-medium text-paper transition-colors hover:border-paper"
+                >
+                  Open in Solana Explorer
+                </a>
+              </div>
+            </div>
+            <ExplorerMock />
+          </div>
+        </section>
+
+        {/* ── Research ───────────────────────────────────────────────── */}
+        <section id="research" aria-label="Our research" className="mx-auto w-full max-w-6xl scroll-mt-6 px-4 py-16 sm:px-8 sm:py-24">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-2xl">
+              <Kicker>Our research</Kicker>
+              <h2 className="mt-3 font-display text-[clamp(2rem,4.5vw,3.25rem)] font-black leading-tight tracking-tight text-ink">
+                Private, and still fast. <span className="text-brand-display">We measured.</span>
+              </h2>
+              <p className="mt-4 text-lg leading-relaxed text-ink-soft">
+                Every figure comes from a script in our repository, run on a 2015 laptop on purpose.
+              </p>
+            </div>
+            <ButtonLink href="/research" variant="quiet" className="shrink-0">
+              Full research
+              <Icon name="arrowRight" size={16} strokeWidth={2.2} />
+            </ButtonLink>
+          </div>
+          <div className="mt-10">
+            <ResearchGrid />
+          </div>
+        </section>
+
+        {/* ── Try it ─────────────────────────────────────────────────── */}
+        <section className="bg-paper-tint">
+          <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-16 sm:px-8 sm:py-20 lg:grid-cols-[1fr_1.6fr]">
+            <div>
+              <Kicker>Try it</Kicker>
+              <h2 className="mt-3 font-display text-[clamp(2rem,4.5vw,3rem)] font-black leading-tight tracking-tight text-ink">
+                Don&rsquo;t take our word for it.
+              </h2>
+              <p className="mt-4 leading-relaxed text-ink-soft">
+                This runs the product&rsquo;s real encryption in your browser, on your sentence,
+                and shows exactly what we would receive.
+              </p>
+            </div>
+            <LiveSeal />
+          </div>
+        </section>
+
+        {/* ── Disclosure ─────────────────────────────────────────────── */}
+        <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-8 sm:py-20">
+          <Kicker>Full disclosure</Kicker>
+          <h2 className="mt-3 font-display text-[clamp(2rem,4.5vw,3rem)] font-black leading-tight tracking-tight text-ink">
+            Exactly what we can see
           </h2>
-          <p className="mt-3 max-w-prose leading-relaxed text-ink-soft">
-            Five steps, and the only two that touch our servers never see a readable word. Click
-            through them.
-          </p>
-          <div className="mt-7">
-            <JourneySteps />
-          </div>
-        </section>
-
-        <section className="border-t border-line py-10 sm:py-12">
-          <h2 className="font-serif text-xl text-ink sm:text-2xl">Exactly what we can see</h2>
-          <p className="mt-3 max-w-prose leading-relaxed text-ink-soft">
+          <p className="mt-3 max-w-2xl leading-relaxed text-ink-soft">
             Both columns are complete. The left one is short because there is genuinely nothing
             else in it.
           </p>
-          <div className="mt-7">
+          <div className="mt-8">
             <VisibilityLedger />
           </div>
         </section>
 
-        <section className="border-t border-line py-10 sm:py-12">
-          <h2 className="font-serif text-xl text-ink sm:text-2xl">What you can do with it</h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {[
-              {
-                term: 'Speak or write, immediately',
-                detail:
-                  'One tap to talk, one to write. No title, no tags, no categories to choose before you have said anything.',
-              },
-              {
-                term: 'Then decide what it was for',
-                detail:
-                  'Keep it privately, ask Echo to reflect on it, or let it go. Nothing is saved anywhere until you choose.',
-              },
-              {
-                term: 'Read it back, years later',
-                detail:
-                  'Your vault is yours to reopen whenever you want. Unlocking takes about four tenths of a second.',
-              },
-              {
-                term: 'Leave with everything',
-                detail:
-                  'One button exports every word, decrypted, as ordinary files that open without us — on any computer.',
-              },
-              {
-                term: 'Make a memory truly gone',
-                detail:
-                  'Forgetting destroys the key first, so even a surviving backup is unreadable noise. Including to us.',
-              },
-              {
-                term: 'Check what has touched it',
-                detail:
-                  'An access log, with the matching public record beside each entry, so our version can be compared.',
-              },
-            ].map((item) => (
-              <div
-                key={item.term}
-                className="rounded-2xl border border-line bg-paper-raised p-5"
-              >
-                <h3 className="text-base text-ink">{item.term}</h3>
+        {/* ── Features ───────────────────────────────────────────────── */}
+        <section className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-8 sm:pb-20">
+          <div className="border-t-[3px] border-rule pt-12">
+            <Kicker>Features</Kicker>
+            <h2 className="mt-3 font-display text-[clamp(2rem,4.5vw,3rem)] font-black leading-tight tracking-tight text-ink">
+              Everything a private journal should be
+            </h2>
+          </div>
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map((item) => (
+              <div key={item.term} className="rounded-3xl border border-line bg-paper-raised p-6">
+                <span className="grid size-11 place-items-center rounded-xl bg-brand-wash text-brand-strong">
+                  <Icon name={item.icon} size={22} strokeWidth={1.9} />
+                </span>
+                <h3 className="mt-5 font-display text-lg font-bold text-ink">{item.term}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">{item.detail}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="border-t border-line py-10 sm:py-12">
-          <h2 className="font-serif text-xl text-ink sm:text-2xl">What we will not do</h2>
-          <ul className="mt-6 flex max-w-prose flex-col gap-3 text-sm leading-relaxed text-ink-soft">
-            <li>We will not read what you write. We built it so that we cannot.</li>
-            <li>We will not sell your data, or use it to target anything at you.</li>
-            <li>We will not train models on your memories.</li>
-            <li>We will not give you a follower count, a streak, or a reason to perform.</li>
-            <li>
-              We will not pretend to be therapy. UNSAID is not a clinical service and cannot
-              assess how you are.
-            </li>
-          </ul>
-        </section>
-
-        <section className="border-t border-line py-10 sm:py-12">
-          <div className="rounded-2xl border border-caution bg-caution-wash p-5 sm:p-7">
-            <p className="text-xs uppercase tracking-[0.14em] text-caution">The honest caveat</p>
-            <h2 className="mt-2 font-serif text-xl text-ink sm:text-2xl">
-              Nothing is unbreakable, and we will not claim otherwise
+        {/* ── Promises + caveat ──────────────────────────────────────── */}
+        <section className="mx-auto grid w-full max-w-6xl gap-8 px-4 pb-16 sm:px-8 sm:pb-20 lg:grid-cols-2">
+          <div className="rounded-3xl border-2 border-ink p-7 sm:p-9">
+            <Kicker>Our promises</Kicker>
+            <h2 className="mt-3 font-display text-3xl font-black tracking-tight text-ink">What we will not do</h2>
+            <ul className="mt-6 flex flex-col gap-4">
+              {[
+                'Read what you write. We built it so that we cannot.',
+                'Sell your data, or use it to target anything at you.',
+                'Train models on your memories.',
+                'Give you a follower count, a streak, or a reason to perform.',
+                'Pretend to be therapy. UNSAID is not a clinical service.',
+              ].map((line) => (
+                <li key={line} className="flex gap-3 leading-relaxed text-ink">
+                  <span className="mt-1 grid size-5 shrink-0 place-items-center rounded-full bg-ink text-paper">
+                    <Icon name="x" size={11} strokeWidth={3} />
+                  </span>
+                  {line}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-3xl bg-caution-wash p-7 sm:p-9">
+            <p className="kicker !text-caution">Editor&rsquo;s note · The honest caveat</p>
+            <h2 className="mt-3 font-display text-3xl font-black tracking-tight text-ink">
+              Nothing is unbreakable
             </h2>
-            <p className="mt-4 max-w-prose leading-relaxed text-ink">
+            <p className="mt-5 leading-relaxed text-ink">
               A device that is already compromised can read what you type before we ever encrypt
-              it. We do not promise anonymity from someone with access to your device or your
-              network. What we promise is narrower and testable: a leak of our database or our
-              storage does not expose what you wrote. And if you lose your phrase and your
-              recovery kit, your memories stay locked permanently — including from us.
+              it, and we do not promise anonymity from someone with access to your device or
+              network. What we promise is narrower and testable: a leak of our database or storage
+              does not expose what you wrote. Lose your phrase and your recovery kit, and your
+              memories stay locked — including from us.
             </p>
             <Link
               href="/privacy"
-              className="mt-5 inline-block text-sm text-ink underline underline-offset-4"
+              className="mt-6 inline-flex items-center gap-2 font-medium text-brand-strong underline underline-offset-4"
             >
               Read exactly how this works
+              <Icon name="arrowRight" size={16} strokeWidth={2.2} />
             </Link>
           </div>
         </section>
 
-        <section className="border-t border-line py-10 sm:py-12">
-          <h2 className="font-serif text-xl text-ink sm:text-2xl">Optional: proof it is yours</h2>
-          <p className="mt-4 max-w-prose leading-relaxed text-ink-soft">
-            If you want it, you can anchor a memory on Solana — publishing a one-way hash that
-            proves it existed and is yours, without revealing a single word of it. Every access to
-            a memory also writes a content-free receipt there, so what we say happened can be
-            checked against a record we cannot edit.
-          </p>
-          <p className="mt-4 max-w-prose leading-relaxed text-ink-soft">
-            Most people will never need this, and everything above works without a wallet.
-          </p>
-          <Link
-            href="/verify"
-            className="mt-5 inline-block text-sm text-ink underline underline-offset-4"
-          >
-            Verify a proof yourself, without us
-          </Link>
-        </section>
-
-        <section className="border-t border-line py-10 sm:py-12">
-          <h2 className="font-serif text-xl text-ink sm:text-2xl">Early access</h2>
-          <p className="mt-4 max-w-prose leading-relaxed text-ink-soft">
-            We are opening this to a small group first, and would rather get it right for thirty
-            people than be adequate for thousands. Leave an address if you want to be one of them.
-          </p>
-          <div className="mt-6">
-            <WaitlistForm />
+        {/* ── Early access ───────────────────────────────────────────── */}
+        <section className="bg-brand">
+          <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-14 sm:px-8 sm:py-20 lg:grid-cols-2 lg:items-center">
+            <div>
+              <p className="kicker !text-ink">Early access</p>
+              <h2 className="mt-3 font-display text-[clamp(2.2rem,5vw,3.75rem)] font-black leading-[1] tracking-tight text-ink">
+                Thirty people first.
+              </h2>
+              <p className="mt-4 max-w-md leading-relaxed text-ink">
+                We would rather get it right for thirty people than be adequate for thousands.
+              </p>
+            </div>
+            <div className="rounded-3xl bg-paper p-6 shadow-[0_24px_48px_-28px_rgba(26,20,16,0.5)] sm:p-8">
+              <WaitlistForm />
+            </div>
           </div>
         </section>
       </main>
 
-      <footer className="flex flex-wrap gap-x-6 gap-y-2 border-t border-line py-8 text-xs text-ink-faint">
-        <Link href="/legal/privacy" className="hover:text-ink-soft">
-          Privacy policy
-        </Link>
-        <Link href="/legal/terms" className="hover:text-ink-soft">
-          Terms
-        </Link>
-        <Link href="/privacy" className="hover:text-ink-soft">
-          How it works
-        </Link>
-        <span className="ml-auto">Not a crisis service.</span>
+      <footer className="bg-night text-[#d9cfc6]">
+        <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-8">
+          <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="font-masthead text-3xl font-black uppercase tracking-[0.04em] text-paper">
+                The Unsaid Times
+              </p>
+              <p className="mt-2 text-sm">Private journaling, proven on Solana. An O.M.X Lab project.</p>
+            </div>
+            <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+              <Link href="/privacy" className="hover:text-paper">How it works</Link>
+              <Link href="/research" className="hover:text-paper">Research</Link>
+              <Link href="/verify" className="hover:text-paper">Verify</Link>
+              <Link href="/legal/privacy" className="hover:text-paper">Privacy policy</Link>
+              <Link href="/legal/terms" className="hover:text-paper">Terms</Link>
+            </nav>
+          </div>
+          <div className="mt-10 flex flex-col gap-2 border-t border-night-line pt-6 text-xs text-[#a8988b] sm:flex-row sm:justify-between">
+            <span>Not a crisis service. If you are in danger, contact local emergency services.</span>
+            <span className="font-mono">{PROGRAM_ID.slice(0, 8)}… · devnet</span>
+          </div>
+        </div>
       </footer>
     </div>
   );

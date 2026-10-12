@@ -6,6 +6,7 @@ import { useEffect, type ReactNode } from 'react';
 import { BackendNotice } from './BackendNotice';
 import { FeedbackButton } from './FeedbackButton';
 import { Logo } from './Logo';
+import { VaultAside } from './VaultAside';
 import { trackReturn, type FeedbackScreen } from '@/lib/signals';
 
 const DESTINATIONS = [
@@ -20,9 +21,12 @@ export function Shell({
   children,
   footer,
   screen,
+  aside,
 }: {
   children: ReactNode;
   footer?: ReactNode;
+  /** Replaces the desktop side panel; pass `false` to give the page the full width. */
+  aside?: ReactNode | false;
   screen: FeedbackScreen;
 }) {
   // Null outside an App Router context; an empty string just means nothing is
@@ -35,21 +39,17 @@ export function Shell({
   }, []);
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-5 sm:px-6">
+    <div className="mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-4 sm:px-8">
       {/*
-       * The header stacks under `sm`. Measured: the wordmark and four links
-       * need 378px on one line, and a 390px phone leaves 342px after the
-       * gutters — so side by side it overflowed on every common handset.
+       * Same width, rules and wordmark as the front page, so moving from the
+       * landing page into the vault never changes the paper underneath.
+       * Stacks under `sm`: wordmark and four links do not fit a 390px phone.
        */}
-      <header className="flex flex-col gap-3 py-6 sm:flex-row sm:items-baseline sm:justify-between sm:py-8">
-        <Link
-          href="/app"
-          className="self-start text-ink"
-          aria-label="UNSAID — open my vault"
-        >
-          <Logo withWordmark />
+      <header className="flex flex-col gap-3 pb-3 pt-5 sm:flex-row sm:items-center sm:justify-between sm:pt-6">
+        <Link href="/app" className="self-start text-ink sm:self-auto" aria-label="UNSAID — open my vault">
+          <Logo withWordmark size={28} />
         </Link>
-        <nav aria-label="Sections" className="flex gap-5 text-sm text-ink-soft sm:gap-6">
+        <nav aria-label="Sections" className="-mx-1 flex gap-1 overflow-x-auto text-sm">
           {DESTINATIONS.map(({ href, label }) => {
             const active = pathname === href || pathname.startsWith(`${href}/`);
             return (
@@ -59,7 +59,9 @@ export function Shell({
                 // Knowing where you are is not decoration: this is the only
                 // orientation cue in a product with no page titles.
                 aria-current={active ? 'page' : undefined}
-                className={active ? 'text-ink underline underline-offset-4' : 'hover:text-ink'}
+                className={`whitespace-nowrap rounded-full px-3.5 py-1.5 transition-colors ${
+                  active ? 'bg-ink font-medium text-paper' : 'text-ink-soft hover:bg-paper-tint hover:text-ink'
+                }`}
               >
                 {label}
               </Link>
@@ -67,13 +69,22 @@ export function Shell({
           })}
         </nav>
       </header>
-      <main className="flex flex-1 flex-col">
-        <BackendNotice />
-        {children}
-      </main>
-      {/* Bottom padding keeps the last line clear of the fixed feedback button,
-          which otherwise strikes through it on short viewports. */}
-      <footer className="pb-20 pt-8 text-xs text-ink-faint">
+      <div aria-hidden="true" className="rule-double h-2" />
+
+      <div
+        className={`grid flex-1 gap-10 pt-8 sm:pt-10 lg:gap-14 ${
+          aside === false ? '' : 'lg:grid-cols-[minmax(0,1fr)_18rem]'
+        }`}
+      >
+        <main className="flex min-w-0 flex-col">
+          <BackendNotice />
+          {children}
+        </main>
+        {aside === false ? null : (aside ?? <VaultAside />)}
+      </div>
+
+      {/* Bottom padding keeps the last line clear of the fixed feedback button. */}
+      <footer className="mt-12 border-t border-line pb-20 pt-6 text-xs text-ink-faint">
         {footer ?? 'Your thoughts are encrypted on this device before they are saved.'}
       </footer>
       <FeedbackButton screen={screen} />

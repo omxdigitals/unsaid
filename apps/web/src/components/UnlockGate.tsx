@@ -1,5 +1,6 @@
 'use client';
 
+import { Icon } from './Icon';
 import { useState, type ReactNode } from 'react';
 import { useVault } from '@/lib/vault';
 import { RecoveryKit } from './RecoveryKit';
@@ -134,103 +135,126 @@ export function UnlockGate({ children }: { children: ReactNode }) {
         : `At least ${MIN_PASSPHRASE} characters. A short sentence is easier to remember than a single word.`;
 
   return (
-    <div className="flex flex-1 flex-col justify-center py-16">
-      <h1 className="font-serif text-2xl text-ink">{copy.heading}</h1>
-      <p className="mt-3 max-w-prose text-sm leading-relaxed text-ink-soft">{copy.body}</p>
+    <div className="flex flex-1 flex-col justify-center py-4 sm:py-8">
+      <div className="rounded-3xl border border-line bg-paper-raised p-6 shadow-[0_30px_60px_-40px_rgba(26,20,16,0.45)] sm:p-9">
+        <span className="grid size-12 place-items-center rounded-2xl bg-ink text-paper">
+          <Icon name={mode === 'recover' ? 'key' : 'lock'} size={22} strokeWidth={2} />
+        </span>
+        <h1 className="mt-6 font-display text-3xl font-black tracking-tight text-ink sm:text-4xl">
+          {copy.heading}
+        </h1>
+        <p className="mt-3 max-w-prose leading-relaxed text-ink-soft">{copy.body}</p>
 
-      <form onSubmit={submit} className="mt-8 flex flex-col gap-4">
-        {needsVaultId && (
+        <form onSubmit={submit} className="mt-8 flex flex-col gap-4">
+          {needsVaultId && (
+            <input
+              type="text"
+              value={vaultId}
+              onChange={(event) => setVaultId(event.target.value)}
+              placeholder="Vault ID from your kit"
+              autoComplete="off"
+              spellCheck={false}
+              required
+              aria-invalid={error ? true : undefined}
+              aria-describedby={errorId}
+              className="rounded-xl border border-field bg-paper-raised px-4 py-3.5 text-ink outline-none transition-shadow placeholder:text-ink-faint focus:border-brand-strong focus:shadow-[0_0_0_4px_var(--color-brand-wash)] focus-visible:outline-none font-mono text-sm placeholder:font-sans"
+            />
+          )}
+
+          {mode === 'recover' && (
+            <input
+              type="text"
+              value={recoveryCode}
+              onChange={(event) => setRecoveryCode(event.target.value)}
+              placeholder="Recovery code"
+              autoComplete="off"
+              spellCheck={false}
+              required
+              aria-invalid={error ? true : undefined}
+              aria-describedby={errorId}
+              className="rounded-xl border border-field bg-paper-raised px-4 py-3.5 text-ink outline-none transition-shadow placeholder:text-ink-faint focus:border-brand-strong focus:shadow-[0_0_0_4px_var(--color-brand-wash)] focus-visible:outline-none font-mono text-sm uppercase placeholder:font-sans placeholder:normal-case"
+            />
+          )}
+
           <input
-            type="text"
-            value={vaultId}
-            onChange={(event) => setVaultId(event.target.value)}
-            placeholder="Vault ID from your kit"
-            autoComplete="off"
-            spellCheck={false}
+            type="password"
+            value={passphrase}
+            onChange={(event) => setPassphrase(event.target.value)}
+            placeholder={mode === 'recover' ? 'Choose a new phrase' : 'A phrase you will remember'}
+            autoComplete={mode === 'unlock' ? 'current-password' : 'new-password'}
+            minLength={MIN_PASSPHRASE}
             required
             aria-invalid={error ? true : undefined}
-            aria-describedby={errorId}
-            className="rounded-lg border border-field bg-paper-raised px-4 py-3 font-mono text-sm text-ink outline-none placeholder:font-sans placeholder:text-ink-faint focus:border-ember"
+            aria-describedby={`${hintId} ${errorId}`}
+            className="rounded-xl border border-field bg-paper-raised px-4 py-3.5 text-ink outline-none transition-shadow placeholder:text-ink-faint focus:border-brand-strong focus:shadow-[0_0_0_4px_var(--color-brand-wash)] focus-visible:outline-none"
           />
-        )}
 
-        {mode === 'recover' && (
-          <input
-            type="text"
-            value={recoveryCode}
-            onChange={(event) => setRecoveryCode(event.target.value)}
-            placeholder="Recovery code"
-            autoComplete="off"
-            spellCheck={false}
-            required
-            aria-invalid={error ? true : undefined}
-            aria-describedby={errorId}
-            className="rounded-lg border border-field bg-paper-raised px-4 py-3 font-mono text-sm uppercase text-ink outline-none placeholder:font-sans placeholder:normal-case placeholder:text-ink-faint focus:border-ember"
-          />
-        )}
+          {mode !== 'unlock' && (
+            // Progress toward the minimum, so the inert button explains itself at a glance.
+            <div aria-hidden="true" className="h-1.5 overflow-hidden rounded-full bg-line">
+              <div
+                className={`h-full rounded-full transition-[width,background-color] duration-300 ${
+                  passphrase.length >= MIN_PASSPHRASE ? 'bg-safe' : 'bg-brand'
+                }`}
+                style={{ width: `${Math.min(passphrase.length / MIN_PASSPHRASE, 1) * 100}%` }}
+              />
+            </div>
+          )}
 
-        <input
-          type="password"
-          value={passphrase}
-          onChange={(event) => setPassphrase(event.target.value)}
-          placeholder={mode === 'recover' ? 'Choose a new phrase' : 'A phrase you will remember'}
-          autoComplete={mode === 'unlock' ? 'current-password' : 'new-password'}
-          minLength={MIN_PASSPHRASE}
-          required
-          aria-invalid={error ? true : undefined}
-          aria-describedby={`${hintId} ${errorId}`}
-          className="rounded-lg border border-field bg-paper-raised px-4 py-3 text-ink outline-none placeholder:text-ink-faint focus:border-ember"
-        />
-
-        {/* Always present so assistive tech has a live region to watch. */}
-        <p id={hintId} aria-live="polite" className="text-xs leading-relaxed text-ink-faint empty:hidden">
-          {hint}
-        </p>
-
-        <p id={errorId} role="alert" className="text-sm text-ember empty:hidden">
-          {error}
-        </p>
-
-        <button
-          type="submit"
-          disabled={busy || passphrase.length < MIN_PASSPHRASE}
-          className="rounded-lg border border-transparent bg-ink px-4 py-3 text-paper transition-colors disabled:cursor-not-allowed disabled:border-field disabled:bg-transparent disabled:text-ink-faint"
-        >
-          {busy ? 'Deriving your key…' : copy.action}
-        </button>
-      </form>
-
-      <div className="mt-6 flex flex-col gap-2 text-sm">
-        {mode !== 'create' && (
-          <button
-            type="button"
-            onClick={() => setChosenMode('create')}
-            className="self-start text-ink-faint underline underline-offset-4 hover:text-ink-soft"
+          {/* Always present so assistive tech has a live region to watch. */}
+          <p
+            id={hintId}
+            aria-live="polite"
+            className="text-xs leading-relaxed text-ink-faint empty:hidden"
           >
-            Start a new vault instead
-          </button>
-        )}
-        {mode !== 'unlock' && (
+            {hint}
+          </p>
+
+          <p id={errorId} role="alert" className="text-sm text-ember empty:hidden">
+            {error}
+          </p>
+
           <button
-            type="button"
-            onClick={() => setChosenMode('unlock')}
-            className="self-start text-ink-faint underline underline-offset-4 hover:text-ink-soft"
+            type="submit"
+            disabled={busy || passphrase.length < MIN_PASSPHRASE}
+            className="rounded-full bg-ink px-4 py-3.5 font-medium text-paper transition-colors hover:bg-night-raised disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-faint"
           >
-            I have a vault and remember my phrase
+            {busy ? 'Deriving your key…' : copy.action}
           </button>
-        )}
-        {mode !== 'recover' && (
-          <button
-            type="button"
-            onClick={() => setChosenMode('recover')}
-            className="self-start text-ink-faint underline underline-offset-4 hover:text-ink-soft"
-          >
-            I lost my phrase
-          </button>
-        )}
+        </form>
+
+        <div className="mt-6 flex flex-col gap-2 border-t border-line pt-5 text-sm">
+          {mode !== 'create' && (
+            <button
+              type="button"
+              onClick={() => setChosenMode('create')}
+              className="self-start text-ink-soft underline decoration-line underline-offset-4 hover:text-brand-strong hover:decoration-brand"
+            >
+              Start a new vault instead
+            </button>
+          )}
+          {mode !== 'unlock' && (
+            <button
+              type="button"
+              onClick={() => setChosenMode('unlock')}
+              className="self-start text-ink-soft underline decoration-line underline-offset-4 hover:text-brand-strong hover:decoration-brand"
+            >
+              I have a vault and remember my phrase
+            </button>
+          )}
+          {mode !== 'recover' && (
+            <button
+              type="button"
+              onClick={() => setChosenMode('recover')}
+              className="self-start text-ink-soft underline decoration-line underline-offset-4 hover:text-brand-strong hover:decoration-brand"
+            >
+              I lost my phrase
+            </button>
+          )}
+        </div>
       </div>
-
-      <p className="mt-8 max-w-prose text-xs leading-relaxed text-ink-faint">
+      <p className="mt-5 flex max-w-prose gap-2 px-1 text-xs leading-relaxed text-ink-faint">
+        <Icon name="cpu" size={14} className="mt-0.5" />
         Deriving the key takes a moment on purpose — it is what makes a guessed phrase impractical
         to test at scale.
       </p>
