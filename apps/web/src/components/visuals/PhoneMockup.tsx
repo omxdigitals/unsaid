@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Icon } from '@/components/Icon';
+import { useInView } from '@/lib/useInView';
 
 /**
  * A phone running UNSAID, drawn in CSS: titanium edge, screen, status bar,
@@ -19,6 +20,7 @@ type Phase = 'write' | 'seal' | 'saved';
 export function PhoneMockup({ className = '' }: { className?: string }) {
   const [phase, setPhase] = useState<Phase>('write');
   const [typed, setTyped] = useState(0);
+  const [ref, inView] = useInView<HTMLDivElement>();
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -26,9 +28,17 @@ export function PhoneMockup({ className = '' }: { className?: string }) {
       setPhase('saved');
       return;
     }
+    if (!inView) return;
     if (phase === 'write') {
       if (typed < LINE.length) {
-        const t = setTimeout(() => setTyped((n) => n + 1), 55);
+        // A word per tick, not a letter: 8 re-renders instead of 38, which
+        // matters on a phone while the page is still loading. The first word
+        // waits a beat so the animation never competes with first paint.
+        const next = LINE.indexOf(' ', typed + 1);
+        const t = setTimeout(
+          () => setTyped(next === -1 ? LINE.length : next),
+          typed === 0 ? 1200 : 170,
+        );
         return () => clearTimeout(t);
       }
       const t = setTimeout(() => setPhase('seal'), 700);
@@ -45,10 +55,11 @@ export function PhoneMockup({ className = '' }: { className?: string }) {
       phase === 'seal' ? 1200 : 3200,
     );
     return () => clearTimeout(t);
-  }, [phase, typed]);
+  }, [phase, typed, inView]);
 
   return (
     <div
+      ref={ref}
       role="img"
       aria-label="The UNSAID app on a phone: a sentence is written, sealed on the device, and a receipt is recorded on Solana."
       className={`relative mx-auto aspect-[9/19] w-[min(19rem,78vw)] ${className}`}

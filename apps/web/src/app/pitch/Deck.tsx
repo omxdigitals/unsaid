@@ -128,7 +128,7 @@ export function Deck() {
       <main
         key={pos.slide}
         aria-live="polite"
-        className="mx-auto flex w-full max-w-7xl flex-1 animate-fade flex-col overflow-y-auto px-5 py-6 sm:px-10 sm:py-10"
+        className="mx-auto flex w-full max-w-7xl flex-1 flex-col overflow-y-auto px-5 py-6 sm:px-10 sm:py-10"
       >
         {slide.render(pos.build)}
       </main>

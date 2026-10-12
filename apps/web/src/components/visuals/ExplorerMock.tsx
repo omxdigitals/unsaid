@@ -1,4 +1,9 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
 import { Icon } from '@/components/Icon';
+import { PROGRAM_ID } from '@/lib/chain';
+import { useInView } from '@/lib/useInView';
 
 /**
  * A block-explorer view of the consent ledger: the program, and the receipts
@@ -7,9 +12,18 @@ import { Icon } from '@/components/Icon';
  * programs/unsaid/src/lib.rs) — labelled as examples on the panel itself.
  */
 
-export const PROGRAM_ID = '7nRKgRMiHfXg3fUXPRFdNX97BWfSKhNqvBaXZM5BLcHZ';
 
-const ROWS = [
+type Row = { sig: string; purpose: string; attested: boolean; slot: string; age: string; fresh?: boolean };
+
+const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+const pick = (n: number) => Array.from({ length: n }, () => B58[Math.floor(Math.random() * B58.length)]).join('');
+const PURPOSES = [
+  { purpose: 'Reflection', attested: true },
+  { purpose: 'Anchor', attested: false },
+  { purpose: 'Export', attested: false },
+] as const;
+
+const ROWS: readonly Row[] = [
   { sig: '4xQm…8KpL', purpose: 'Reflection', attested: true, slot: '318,402,117', age: '12s' },
   { sig: '2bTr…Vn9e', purpose: 'Anchor', attested: false, slot: '318,401,980', age: '1m' },
   { sig: '5hCw…Qz3a', purpose: 'Reflection', attested: true, slot: '318,398,544', age: '24m' },
@@ -17,8 +31,27 @@ const ROWS = [
 ] as const;
 
 export function ExplorerMock({ className = '' }: { className?: string }) {
+  // A new receipt arrives every few seconds while the panel is on screen, so
+  // the ledger reads as live. Rows are illustrative, and the panel says so.
+  const [rows, setRows] = useState<Row[]>([...ROWS]);
+  const slot = useRef(318_402_117);
+  const [ref, inView] = useInView<HTMLDivElement>();
+  useEffect(() => {
+    if (!inView || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const t = setInterval(() => {
+      slot.current += 37 + Math.floor(Math.random() * 120);
+      const kind = PURPOSES[Math.random() < 0.6 ? 0 : Math.random() < 0.5 ? 1 : 2]!;
+      setRows((prev) => [
+        { sig: `${pick(4)}…${pick(4)}`, ...kind, slot: slot.current.toLocaleString('en-US'), age: 'now', fresh: true },
+        ...prev.slice(0, 3).map((r) => ({ ...r, fresh: false, age: r.age === 'now' ? '4s' : r.age })),
+      ]);
+    }, 3500);
+    return () => clearInterval(t);
+  }, [inView]);
+
   return (
     <div
+      ref={ref}
       className={`overflow-hidden rounded-2xl border border-night-line bg-night text-paper shadow-[0_40px_80px_-40px_rgba(0,0,0,0.8)] ${className}`}
     >
       {/* Window chrome */}
@@ -72,8 +105,11 @@ export function ExplorerMock({ className = '' }: { className?: string }) {
               </tr>
             </thead>
             <tbody className="font-mono">
-              {ROWS.map((row) => (
-                <tr key={row.sig} className="border-b border-night-line/60 last:border-0">
+              {rows.map((row) => (
+                <tr
+                  key={row.sig}
+                  className={`border-b border-night-line/60 last:border-0 ${row.fresh ? 'animate-rise bg-brand/10' : ''}`}
+                >
                   <td className="py-2 text-brand">{row.sig}</td>
                   <td className="py-2 font-sans">{row.purpose}</td>
                   <td className="hidden py-2 font-sans min-[420px]:table-cell">

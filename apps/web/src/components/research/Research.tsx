@@ -1,14 +1,14 @@
-'use client';
-
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Icon } from '@/components/Icon';
+import { Bars } from './Bars';
 
 /**
  * The research, drawn. Every value is copied from docs/paper/benchmarks.md
  * (run 9 Oct 2026, Intel i5-5250U — a 2015 laptop, deliberately unflattering)
  * and docs/paper/research-notes.md. Nothing here is fetched or computed live.
  *
- * Charts follow one rule set: a single hue per chart (orange), so no legend is
+ * Server-rendered; only the bar chart's hover read-out runs in the browser
+ * (./Bars). Charts follow one rule set: a single hue per chart (orange), so no legend is
  * needed; values are direct-labelled; every mark has a hover read-out; and a
  * comparison of two series is drawn as two small panels rather than two hues.
  */
@@ -71,47 +71,6 @@ function Panel({
   );
 }
 
-/** Horizontal bars, one hue, value at the end of each bar, hover read-out. */
-function Bars({
-  rows,
-  max,
-  format,
-  ariaLabel,
-}: {
-  rows: { label: string; value: number; detail?: string }[];
-  max: number;
-  format: (v: number) => string;
-  ariaLabel: string;
-}) {
-  const [hover, setHover] = useState<number | null>(null);
-  return (
-    <div role="img" aria-label={ariaLabel} className="flex flex-col gap-2.5">
-      {rows.map((r, i) => (
-        <div
-          key={r.label}
-          className="group grid grid-cols-[4.5rem_1fr] items-center gap-3"
-          onMouseEnter={() => setHover(i)}
-          onMouseLeave={() => setHover(null)}
-        >
-          <span className="text-right font-mono text-xs text-ink-soft">{r.label}</span>
-          <div className="relative flex h-7 items-center">
-            <div
-              className={`h-full rounded-r-[4px] transition-opacity ${hover === null || hover === i ? 'bg-brand-bright' : 'bg-brand-bright opacity-40'}`}
-              style={{ width: `max(${(r.value / max) * 78}%, 3px)` }}
-            />
-            <span className="ml-2 whitespace-nowrap font-mono text-xs text-ink">{format(r.value)}</span>
-            {hover === i && r.detail && (
-              <span className="absolute -top-8 left-0 z-10 whitespace-nowrap rounded-lg bg-ink px-2.5 py-1 text-[0.7rem] text-paper shadow">
-                {r.detail}
-              </span>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 /* ---------- the charts ---------- */
 
 export function EnvelopeChart() {
@@ -129,7 +88,7 @@ export function EnvelopeChart() {
           detail: `${e.size}: seal ${e.seal} ms · open ${e.open} ms`,
         }))}
         max={83.4}
-        format={(v) => `${v} ms`}
+        unit="ms"
       />
     </Panel>
   );

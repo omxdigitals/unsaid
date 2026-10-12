@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Icon, type IconName } from '@/components/Icon';
+import { useInView } from '@/lib/useInView';
 
 /*
  * Looping scenes for the deck — each one plays like a GIF on its slide and can
@@ -83,17 +84,19 @@ function Pipeline({ title, stages, at, good }: { title: string; stages: Stage[];
 export function DualPipeline() {
   const reduced = useReducedMotion();
   const [at, setAt] = useState(0);
+  const [ref, inView] = useInView<HTMLDivElement>();
   useEffect(() => {
     if (reduced) {
       setAt(3);
       return;
     }
+    if (!inView) return;
     const t = setInterval(() => setAt((a) => (a >= 5 ? 0 : a + 1)), 1100);
     return () => clearInterval(t);
-  }, [reduced]);
+  }, [reduced, inView]);
   const step = Math.min(at, 3);
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
+    <div ref={ref} className="grid gap-4 lg:grid-cols-2">
       <Pipeline title="A typical AI app" stages={TYPICAL} at={step} good={false} />
       <Pipeline title="UNSAID" stages={OURS} at={step} good />
     </div>
@@ -120,9 +123,10 @@ export function ChainStream() {
     Array.from({ length: 6 }, (_, i) => ({ slot: 318_402_094 + i, receipt: i === 3, hash: 'a1f0…3c' })),
   );
   const [latest, setLatest] = useState<Block | null>(null);
+  const [ref, inView] = useInView<HTMLDivElement>();
 
   useEffect(() => {
-    if (reduced) return;
+    if (reduced || !inView) return;
     const t = setInterval(() => {
       slot.current += 1;
       const b = { slot: slot.current, receipt: slot.current % 3 === 0, hash: hash() };
@@ -130,10 +134,10 @@ export function ChainStream() {
       if (b.receipt) setLatest(b);
     }, 900);
     return () => clearInterval(t);
-  }, [reduced]);
+  }, [reduced, inView]);
 
   return (
-    <div className="overflow-hidden rounded-3xl bg-night p-5 text-paper sm:p-6">
+    <div ref={ref} className="overflow-hidden rounded-3xl bg-night p-5 text-paper sm:p-6">
       <div className="flex items-center justify-between text-xs text-[#a8988b]">
         <span className="flex items-center gap-2">
           <span className="relative flex size-2">

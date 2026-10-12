@@ -8,7 +8,7 @@ import { PhalaFlow } from '@/components/scenes/PhalaFlow';
 import { LockIcon, SealLoop } from '@/components/scenes/SealLoop';
 import { FUNDING, LIVE_URL, STATS, UNIT_COST, type Stat } from './data';
 import { GhibliUpload, PlaintextLeak, PolicyScroll } from './scenes';
-import { ChainStream, CountUp, DualPipeline } from './scenes2';
+import { ChainStream, CountUp, DualPipeline } from '@/components/scenes/Loops';
 import { CanarySweep, PriorArt, ReceiptLatency, SaveBreakdown } from '@/components/research/Research';
 
 export type Slide = {

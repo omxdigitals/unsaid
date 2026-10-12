@@ -14,13 +14,11 @@ import './globals.css';
 const fraunces = Fraunces({
   subsets: ['latin'],
   variable: '--font-fraunces',
-  axes: ['opsz', 'SOFT'],
   display: 'swap',
 });
 const archivo = Archivo({
   subsets: ['latin'],
   variable: '--font-archivo',
-  axes: ['wdth'],
   display: 'swap',
 });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });

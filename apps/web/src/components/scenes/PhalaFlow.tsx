@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 import { Icon, type IconName } from '@/components/Icon';
+import { useInView } from '@/lib/useInView';
 import { LockIcon } from './SealLoop';
 
 /**
@@ -47,22 +48,24 @@ export function PhalaFlow({
   showCaption?: boolean;
 }) {
   const [auto, setAuto] = useState(1);
+  const [ref, inView] = useInView<HTMLDivElement>();
   useEffect(() => {
     if (!autoplay) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setAuto(PHALA_STEPS.length);
       return;
     }
+    if (!inView) return;
     const t = setInterval(() => setAuto((s) => (s % PHALA_STEPS.length) + 1), 2600);
     return () => clearInterval(t);
-  }, [autoplay]);
+  }, [autoplay, inView]);
 
   // Beats are 1-based: 0 shows the empty stage, 5 shows everything.
   const step = controlled ?? auto;
   const at = (n: number) => step >= n;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div ref={ref} className="flex flex-col gap-4">
       <div className="grid grid-cols-[1fr_1.5rem_1fr_1.5rem_1fr] items-stretch gap-1 sm:grid-cols-[1fr_3rem_1fr_3rem_1fr] sm:gap-2">
         <Node label="Your phone" active={step === 1 || step === 2 || step === 4} icon="phone">
           {at(1) && (
@@ -191,7 +194,7 @@ function Chip({
 }) {
   return (
     <span
-      className={`rounded-full border px-2 py-0.5 text-[0.625rem] leading-tight sm:text-[0.6875rem] ${
+      className={`whitespace-nowrap rounded-full border px-1.5 py-0.5 text-[0.58rem] leading-tight sm:px-2 sm:text-[0.6875rem] ${
         tone === 'safe' ? 'border-safe bg-safe-wash text-safe' : 'border-brand text-brand-strong'
       } ${className}`}
     >

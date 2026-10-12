@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useInView } from '@/lib/useInView';
 
 /**
  * The whole product in six seconds, on a loop: a sentence is written, turns to
@@ -35,6 +36,8 @@ export function SealLoop({ className = '' }: { className?: string }) {
   const [stage, setStage] = useState<Stage>('typing');
   const [typed, setTyped] = useState(0);
   const [cipher, setCipher] = useState(() => 'x'.repeat(SENTENCE.length));
+  // Paused while off screen: the loop is decoration and should cost nothing unseen.
+  const [ref, inView] = useInView<HTMLDivElement>();
 
   // Stage clock. Reduced motion holds on the "stored" frame, which tells the
   // whole story in one still: readable on the left, noise on the server.
@@ -45,27 +48,28 @@ export function SealLoop({ className = '' }: { className?: string }) {
       setStage('stored');
       return;
     }
+    if (!inView) return;
     const timer = setTimeout(() => {
       const next = ORDER[(ORDER.indexOf(stage) + 1) % ORDER.length]!;
       if (next === 'typing') setTyped(0);
       setStage(next);
     }, DURATION[stage]);
     return () => clearTimeout(timer);
-  }, [stage]);
+  }, [stage, inView]);
 
   // Typewriter.
   useEffect(() => {
-    if (stage !== 'typing' || typed >= SENTENCE.length) return;
+    if (!inView || stage !== 'typing' || typed >= SENTENCE.length) return;
     const t = setTimeout(() => setTyped((n) => n + 1), 45);
     return () => clearTimeout(t);
-  }, [stage, typed]);
+  }, [stage, typed, inView]);
 
   // Scramble while sealing; freeze once sealed.
   useEffect(() => {
-    if (stage !== 'sealing') return;
+    if (!inView || stage !== 'sealing') return;
     const t = setInterval(() => setCipher(noise(SENTENCE.length)), 60);
     return () => clearInterval(t);
-  }, [stage]);
+  }, [stage, inView]);
 
   const sealed = stage !== 'typing';
   const onServer = stage === 'travel' || stage === 'stored';
@@ -73,6 +77,7 @@ export function SealLoop({ className = '' }: { className?: string }) {
 
   return (
     <div
+      ref={ref}
       className={`relative overflow-hidden rounded-2xl border border-line bg-paper-raised p-5 sm:p-6 ${className}`}
       aria-label="Illustration: a sentence is encrypted on the device, stored as unreadable text, and decrypted only on the device."
       role="img"

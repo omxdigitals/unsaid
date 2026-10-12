@@ -63,6 +63,31 @@ host.
 buttons and the highlighter. Inside the vault buttons are ink and there is no
 highlighter.
 
+## Motion and performance
+
+Motion carries the explanation here — the pipelines, the enclave, the chain —
+so it has rules, measured on a phone profile (390px, 4× CPU slowdown):
+
+- **Loops pause off screen.** Every timer-driven scene takes `useInView`
+  (`src/lib/useInView.ts`) and stops while scrolled away. A long page used to
+  keep six timers re-rendering unseen.
+- **Prefer CSS to timers.** The headline ticker, step-card art and chip pulses
+  are pure CSS keyframes in server components: no JavaScript, nothing to
+  hydrate.
+- **Nothing in the first screen waits on an animation.** Reveal-on-scroll is
+  for below the fold only. A fade on the deck's slide container held its
+  Largest Contentful Paint at 4.9 s; removing it brought it to ~0.3 s.
+- **Animate cheaply.** The hero phone types a word per tick (8 renders, not
+  38) and starts after first paint.
+- **Fonts carry only the axes we use.** Dropping Fraunces' optical-size and
+  softness axes and Archivo's width axis took font bytes per page from 294 KB
+  to 158 KB.
+- **Server by default.** Charts are server components; only the bar hover is a
+  client island. A server component must not import a value from a client
+  module (it receives a reference, not the value) — shared constants live in
+  plain modules such as `src/lib/chain.ts`.
+- Everything honours `prefers-reduced-motion` and shows its end state.
+
 ## Themes
 
 There is one theme, a Tailwind `@theme` block in
