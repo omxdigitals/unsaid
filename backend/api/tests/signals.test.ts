@@ -213,7 +213,20 @@ describe('the funnel', () => {
   });
 
   it('counts distinct cohorts rather than raw events', async () => {
-    // Ten events from one browser is one activated person, not ten.
+    // Five events from one browser is one activated person, not five. The
+    // funnel spans the whole database, so measure the change, not the total:
+    // other suites leave their own cohorts behind.
+    const funnel = async () =>
+      (
+        await app.inject({
+          method: 'GET',
+          url: '/v1/signals/funnel?days=1',
+          headers: { authorization: `Bearer ${token}` },
+        })
+      ).json().vaultsCreated as number;
+
+    await getDatabase().delete(analyticsEvents).where(eq(analyticsEvents.cohortKey, COHORT));
+    const before = await funnel();
     for (let i = 0; i < 5; i += 1) {
       await post('/v1/signals/events', {
         key: COHORT,
@@ -221,11 +234,6 @@ describe('the funnel', () => {
       });
     }
 
-    const res = await app.inject({
-      method: 'GET',
-      url: '/v1/signals/funnel?days=1',
-      headers: { authorization: `Bearer ${token}` },
-    });
-    expect(res.json().vaultsCreated).toBeLessThan(5);
+    expect(await funnel()).toBe(before + 1);
   });
 });

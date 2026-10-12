@@ -43,7 +43,7 @@ What this is built against:
 | Product | 4 Two worlds | 1:00–1:15 | "Same sentence, two designs. On the left it ends in a training set. On the right it ends as noise on our server and a receipt on Solana — readable only on your phone." |
 | Demo | 5 Live | 1:15–1:35 | "This is the real encryption running in the browser. I type a sentence, press encrypt — this is everything our server would ever receive." |
 | Demo | 6 Private AI | 1:35–1:55 | "When you ask Echo to reflect, that one memory is read inside a hardware enclave that signs which code ran. The reply comes back sealed, and a receipt with that signature lands on Solana. No content, ever." |
-| Traction | 7 It runs | 1:55–2:20 | "It's live today, with our program on Solana devnet. We planted 30 secrets and searched the whole database, every file and every log: zero found. 246 tests, and CI fails if anything could store content. We build in public at x.com/unsaid_privacy — [say the real follower and reply numbers]." |
+| Traction | 7 It runs | 1:55–2:20 | "It's live today, with our program on Solana devnet. We planted 30 secrets and searched the whole database, every file and every log: zero found. 240 tests, and CI fails if anything could store content. We build in public at x.com/unsaid_privacy — [say the real follower and reply numbers]." |
 | Team | 8 Team | 2:20–2:35 | "We're three: Siddanta Sodari, full stack; Rabin Poudel, design; Sachin Rijal, backend. Between us we built the vault, the enclave path, the Solana program and the research behind it." |
 | Vision | 9 Vision | 2:35–2:50 | "Every conversation with AI should come with a receipt. Next: live attested AI, batched receipts, mainnet. We're raising $72.5K for six months to a mainnet pilot: the team, a security audit, confidential inference and mainnet." |
 | Close | 10 Back page | 2:50–3:00 | "Some things stay unsaid. Now they stay safe. Try it, verify it, try to break it." |
@@ -62,7 +62,7 @@ and "receipt"; the technical video carries the rest.
 | 5 Solana | 1:25–1:55 | The `ConsentReceipt` PDA and its 212 bytes, field by field; the five instructions; 0.0017 SOL, ~1.1 s on devnet. |
 | 6 Verifier | 1:55–2:10 | Cut to `/verify`; derive the PDA in the browser, read a public RPC, compare the commitment. VERIFIED stamp. |
 | 7 Decisions | 2:10–2:35 | TEE not FHE; per-receipt accounts first, Merkle batching next; no content columns, enforced in CI; client-side search. |
-| 8 Quality | 2:35–2:50 | 246 tests, the canary sweep, the CI gates. Point to `/research` and `docs/paper`. |
+| 8 Quality | 2:35–2:50 | 240 tests, the canary sweep, the CI gates. Point to `/research` and `docs/paper`. |
 
 ## The ask: $72.5K, six months to a mainnet pilot
 

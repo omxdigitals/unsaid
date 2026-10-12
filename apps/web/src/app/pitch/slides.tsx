@@ -655,7 +655,7 @@ const LIB = {
     builds: 4,
     render: (b) => {
       const stops = [
-        { when: 'Now', what: 'Working product on devnet · public verifier · 220+ tests' },
+        { when: 'Now', what: 'Working product on devnet · public verifier · 240 tests' },
         { when: 'Next', what: 'Funding · live attested AI · batched receipts · pilot users' },
         { when: 'Then', what: 'Mainnet · mobile apps · hardening for scale' },
         { when: 'Global', what: 'Launch worldwide, in every language people keep secrets in' },
@@ -772,7 +772,7 @@ const traction: Slide = {
           { v: 'Live', l: LIVE_URL, k: 'Public app' },
           { v: 'Devnet', l: `${PROGRAM_ID.slice(0, 8)}… · Anchor program, called for real`, k: 'On Solana' },
           { v: '0', l: 'plaintext found after planting 30 secrets and searching every table, file and log', k: 'Leak test' },
-          { v: '246', l: 'automated tests · CI fails if a content column or content log ever appears', k: 'Quality' },
+          { v: '240', l: 'automated tests · CI fails if a content column or content log ever appears', k: 'Quality' },
         ].map((t, i) => (
           <Beat key={t.k} at={i < 2 ? 0 : 1} b={b} className="border-t-[3px] border-rule pt-4">
             <p className="kicker !text-ink-faint">{t.k}</p>

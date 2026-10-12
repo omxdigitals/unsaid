@@ -303,7 +303,7 @@ export const TECH: Slide[] = [
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           {[
-            ['246', 'automated tests across crypto, API, program client and web'],
+            ['240', 'automated tests across crypto, API, program client and web'],
             ['0', 'secrets found by the canary sweep across DB, storage and logs'],
             ['CI', 'secret scan · no content columns · no content in logs · dependency audit'],
           ].map(([v, l]) => (

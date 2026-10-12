@@ -110,7 +110,7 @@ is re-uploaded, and an existing recovery kit keeps working.
 ## Testing
 
 ```bash
-pnpm test               # 201 tests: crypto, API, components, Solana client
+pnpm test               # 240 tests: crypto, API, components, Solana client (2 need a live enclave key)
 cargo check -p unsaid   # the Anchor program
 ./scripts/restore-drill.sh   # prove a backup actually restores
 node scripts/scan-secrets.mjs --all   # also runs on every commit
