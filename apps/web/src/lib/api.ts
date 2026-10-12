@@ -1,6 +1,6 @@
 import type { ApiError } from '@unsaid/types';
+import { API_BASE as BASE_URL } from '@/lib/apiBase';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3011';
 
 export class ApiRequestError extends Error {
   constructor(

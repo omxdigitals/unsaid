@@ -8,6 +8,19 @@ blueprint: voice and text capture, a client-side-encrypted vault, consent-gated
 AI reflection ("Echo"), and a Solana layer that carries proof and consent —
 never content.
 
+## For judges
+
+| | |
+|---|---|
+| **Live app** | https://unsaid-vault.vercel.app |
+| **Pitch deck (3 min)** | [`/pitch`](https://unsaid-vault.vercel.app/pitch) — `T` starts the clock, `N` shows notes |
+| **Technical demo deck** | [`/pitch/tech`](https://unsaid-vault.vercel.app/pitch/tech) |
+| **Research, measured** | [`/research`](https://unsaid-vault.vercel.app/research) · [`docs/paper/benchmarks.md`](docs/paper/benchmarks.md) |
+| **Verify a receipt, without us** | [`/verify`](https://unsaid-vault.vercel.app/verify) |
+| **Solana program (devnet)** | `7nRKgRMiHfXg3fUXPRFdNX97BWfSKhNqvBaXZM5BLcHZ` — [`programs/unsaid`](programs/unsaid) |
+| **Why it is built this way** | [`docs/decisions.md`](docs/decisions.md) |
+| **Video scripts and checklist** | [`docs/submission.md`](docs/submission.md) |
+
 Three layers, in the order they matter:
 
 | Layer | What it does | State |

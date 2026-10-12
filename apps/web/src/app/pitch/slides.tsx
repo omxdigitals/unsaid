@@ -6,13 +6,20 @@ import { LiveSeal } from '@/components/LiveSeal';
 import { Marker, StatFigure, type StatKind } from '@/components/editorial';
 import { PhalaFlow } from '@/components/scenes/PhalaFlow';
 import { LockIcon, SealLoop } from '@/components/scenes/SealLoop';
-import { FUNDING, LIVE_URL, STATS, UNIT_COST, type Stat } from './data';
+import { FUNDING, LIVE_URL, PITCH_SECONDS, STATS, TEAM, UNIT_COST, VALIDATION, type Stat } from './data';
+import { PROGRAM_ID } from '@/lib/chain';
 import { GhibliUpload, PlaintextLeak, PolicyScroll } from './scenes';
 import { ChainStream, CountUp, DualPipeline } from '@/components/scenes/Loops';
 import { CanarySweep, PriorArt, ReceiptLatency, SaveBreakdown } from '@/components/research/Research';
 
+/** The seven beats past Colosseum pitches follow, in order (3mins.fun, 452 slides). */
+export type PitchBeat = 'Hook' | 'Problem' | 'Product' | 'Demo' | 'Traction' | 'Team' | 'Vision';
+
 export type Slide = {
   section: string;
+  /** For the timed pitch: which beat this is, and its share of the three minutes. */
+  beat?: PitchBeat;
+  seconds?: number;
   /** Beats after the slide's first frame. 0 means the slide is one frame. */
   builds: number;
   render: (build: number) => ReactNode;
@@ -22,7 +29,7 @@ export type Slide = {
 /* ---------- small building blocks ---------- */
 
 /** Reserves its space from the start, so a beat appearing never shoves the slide. */
-function Beat({
+export function Beat({
   at,
   b,
   children,
@@ -36,7 +43,7 @@ function Beat({
   return <div className={`${b >= at ? 'animate-rise' : 'invisible'} ${className}`}>{children}</div>;
 }
 
-function H({ children, className = '' }: { children: ReactNode; className?: string }) {
+export function H({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
     <h2
       className={`font-display text-[clamp(2rem,min(5.2vw,8.5vh),4.25rem)] font-black leading-[1.02] tracking-tight text-ink ${className}`}
@@ -46,7 +53,7 @@ function H({ children, className = '' }: { children: ReactNode; className?: stri
   );
 }
 
-function K({ children }: { children: ReactNode }) {
+export function K({ children }: { children: ReactNode }) {
   return <p className="kicker mb-3">{children}</p>;
 }
 
@@ -76,9 +83,9 @@ function Pill({ kind }: { kind: StatKind }) {
 
 /* ---------- the deck ---------- */
 
-export const SLIDES: Slide[] = [
+const LIB = {
   /* 1 · Cover */
-  {
+  cover: {
     section: 'Front page',
     builds: 2,
     render: (b) => (
@@ -122,7 +129,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 2 · Problem: plain text */
-  {
+  problem: {
     section: 'The problem',
     builds: 8,
     render: (b) => (
@@ -159,7 +166,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 3 · Privacy policy */
-  {
+  illusion: {
     section: 'The illusion',
     builds: 3,
     render: (b) => (
@@ -192,7 +199,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 4 · Enter Unsaid */
-  {
+  answer: {
     section: 'Our answer',
     builds: 4,
     render: (b) => (
@@ -231,7 +238,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 4b · Same sentence, two worlds */
-  {
+  difference: {
     section: 'The difference',
     builds: 0,
     render: () => (
@@ -249,7 +256,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 5 · Live demo */
-  {
+  live: {
     section: 'Live',
     builds: 1,
     render: (b) => (
@@ -286,7 +293,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 6 · Echo + Phala */
-  {
+  privateAi: {
     section: 'Private AI',
     builds: 5,
     render: (b) => (
@@ -316,7 +323,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 7 · Blockchain, only where it earns its place */
-  {
+  solana: {
     section: 'Why Solana',
     builds: 3,
     render: (b) => (
@@ -377,7 +384,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 8 · Results */
-  {
+  results: {
     section: 'Results',
     builds: 6,
     render: (b) => {
@@ -422,7 +429,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 8b · Research */
-  {
+  research: {
     section: 'Research',
     builds: 3,
     render: (b) => (
@@ -463,7 +470,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 9 · Market gap */
-  {
+  gap: {
     section: 'The gap',
     builds: 2,
     render: (b) => (
@@ -502,7 +509,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 10 · Giants */
-  {
+  giants: {
     section: 'Competition',
     builds: 2,
     render: (b) => (
@@ -548,7 +555,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 11 · Business model */
-  {
+  business: {
     section: 'Business',
     builds: 2,
     render: (b) => (
@@ -605,7 +612,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 12 · Challenges + ask */
-  {
+  ask: {
     section: 'The ask',
     builds: 2,
     render: (b) => (
@@ -643,7 +650,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 13 · Roadmap */
-  {
+  roadmap: {
     section: 'Roadmap',
     builds: 4,
     render: (b) => {
@@ -688,7 +695,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 14 · Why invest */
-  {
+  whyNow: {
     section: 'Why now',
     builds: 3,
     render: (b) => (
@@ -720,7 +727,7 @@ export const SLIDES: Slide[] = [
   },
 
   /* 15 · Close */
-  {
+  close: {
     section: 'Back page',
     builds: 1,
     render: (b) => (
@@ -742,7 +749,199 @@ export const SLIDES: Slide[] = [
     ),
     notes: <>Leave this up during questions.</>,
   },
+} satisfies Record<string, Slide>;
+
+/** Hide a field until it holds a real value. */
+const filled = (v: string) => v.trim() !== '' && !v.includes('___');
+
+/* ---------- slides that exist only for the timed pitch ---------- */
+
+const traction: Slide = {
+  section: 'Traction',
+  builds: 2,
+  render: (b) => (
+    <div className="flex flex-1 flex-col gap-8">
+      <div>
+        <K>Traction · what is real today</K>
+        <H>
+          Not a mockup. <span className="text-brand-display">It runs.</span>
+        </H>
+      </div>
+      <div className="grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { v: 'Live', l: LIVE_URL, k: 'Public app' },
+          { v: 'Devnet', l: `${PROGRAM_ID.slice(0, 8)}… · Anchor program, called for real`, k: 'On Solana' },
+          { v: '0', l: 'plaintext found after planting 30 secrets and searching every table, file and log', k: 'Leak test' },
+          { v: '246', l: 'automated tests · CI fails if a content column or content log ever appears', k: 'Quality' },
+        ].map((t, i) => (
+          <Beat key={t.k} at={i < 2 ? 0 : 1} b={b} className="border-t-[3px] border-rule pt-4">
+            <p className="kicker !text-ink-faint">{t.k}</p>
+            <p className="mt-2 font-display text-5xl font-black text-brand-display">
+              <CountUp value={t.v} />
+            </p>
+            <p className="mt-2 text-sm leading-snug text-ink">{t.l}</p>
+          </Beat>
+        ))}
+      </div>
+      <Beat at={2} b={b} className="flex flex-wrap items-center gap-x-10 gap-y-4 rounded-3xl border border-line bg-paper-raised p-6">
+        <div>
+          <p className="kicker">Building in public</p>
+          <div className="mt-2 flex flex-wrap gap-3">
+            {VALIDATION.links.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 font-medium text-paper"
+              >
+                <span aria-hidden="true" className="font-display font-black">
+                  X
+                </span>
+                {l.label}
+              </a>
+            ))}
+          </div>
+        </div>
+        {filled(VALIDATION.waitlist) && (
+          <p className="text-lg text-ink">
+            Waitlist <strong className="font-display text-3xl font-black">{VALIDATION.waitlist}</strong>
+          </p>
+        )}
+        {filled(VALIDATION.conversations) && (
+          <p className="text-lg text-ink">
+            Conversations <strong className="font-display text-3xl font-black">{VALIDATION.conversations}</strong>
+          </p>
+        )}
+        {VALIDATION.quotes.slice(0, 2).map((q) => (
+          <blockquote key={q.quote} className="max-w-md border-l-4 border-brand pl-4">
+            <p className="font-serif text-lg leading-snug text-ink">&ldquo;{q.quote}&rdquo;</p>
+            <footer className="mt-1 text-sm text-ink-faint">{q.who}</footer>
+          </blockquote>
+        ))}
+      </Beat>
+    </div>
+  ),
+  notes: (
+    <>
+      Colosseum asks for &ldquo;user feedback or validation, even if informal&rdquo;. Say the real
+      numbers from x.com/unsaid_privacy out loud — followers, replies, anyone who asked to try it. Everything on the first two beats is checkable: the URL works, the program
+      is on devnet, the leak sweep and tests are in the repo.
+    </>
+  ),
+};
+
+const team: Slide = {
+  section: 'Team',
+  builds: 0,
+  render: () => (
+    <div className="flex flex-1 flex-col gap-10">
+      <div>
+        <K>Team</K>
+        <H>
+          Who is building this, <span className="text-brand-display">and why us.</span>
+        </H>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {TEAM.map((m) => (
+          <div key={m.name} className="rounded-3xl border border-line bg-paper-raised p-6">
+            <span className="grid size-14 place-items-center rounded-2xl bg-ink font-display text-xl font-black text-paper">
+              {m.name
+                .split(' ')
+                .map((w) => w[0])
+                .join('')
+                .slice(0, 2)}
+            </span>
+            <p className="mt-5 font-display text-xl font-black leading-tight text-ink">{m.name}</p>
+            <p className="mt-1 text-sm font-semibold text-brand-strong">{m.role}</p>
+            {m.background && <p className="mt-3 text-sm leading-relaxed text-ink-soft">{m.background}</p>}
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-wrap items-center gap-x-8 gap-y-2 rounded-3xl bg-night px-7 py-5 text-paper">
+        <p className="kicker !text-brand">Built so far</p>
+        <p className="font-display text-lg font-bold">
+          Encrypted vault · attested-AI path · Anchor program on devnet · public verifier · research paper in progress
+        </p>
+      </div>
+    </div>
+  ),
+  notes: <>Colosseum names leaving out team background as a common mistake. One sentence each: what you have built before, and why you.</>,
+};
+
+const vision: Slide = {
+  section: 'Vision',
+  builds: 2,
+  render: (b) => (
+    <div className="flex flex-1 flex-col justify-center gap-10">
+      <div>
+        <K>Vision</K>
+        <H className="max-w-5xl">
+          Every conversation with AI should come with a <Marker>receipt.</Marker>
+        </H>
+      </div>
+      <Beat at={1} b={b} className="grid gap-4 sm:grid-cols-3">
+        {[
+          ['Now', 'Live on devnet · working product · public verifier'],
+          ['Next', 'Live attested AI · batched receipts · first pilot users'],
+          ['Then', 'Mainnet · mobile · a privacy layer other AI apps can use'],
+        ].map(([w, d]) => (
+          <div key={w} className="border-t-[3px] border-rule pt-3">
+            <p className="font-display text-3xl font-black text-ink">{w}</p>
+            <p className="mt-1 text-ink-soft">{d}</p>
+          </div>
+        ))}
+      </Beat>
+      <Beat at={2} b={b} className="flex flex-wrap items-center gap-4">
+        <span className="rounded-full bg-brand px-5 py-2.5 font-display text-xl font-black text-on-brand">
+          Raising {FUNDING.amount}
+        </span>
+        <span className="text-ink-soft">
+          {FUNDING.runway}: team, a security audit, confidential inference and mainnet
+        </span>
+      </Beat>
+    </div>
+  ),
+  notes: <>One sentence of vision, the roadmap in three words each, then the ask. The ask is itemised in data.ts (FUNDING_LINES) — know the top two lines: the audit and team runway.</>,
+};
+
+/* ---------- the decks ---------- */
+
+/**
+ * The three-minute pitch video: the seven beats past Colosseum pitches follow,
+ * with a time budget per slide that sums to exactly three minutes.
+ */
+export const PITCH: Slide[] = [
+  { ...LIB.cover, beat: 'Hook', seconds: 15 },
+  { ...LIB.problem, beat: 'Problem', seconds: 30 },
+  { ...LIB.answer, beat: 'Product', seconds: 15 },
+  { ...LIB.difference, beat: 'Product', seconds: 15 },
+  { ...LIB.live, beat: 'Demo', seconds: 20 },
+  { ...LIB.privateAi, beat: 'Demo', seconds: 20 },
+  { ...traction, beat: 'Traction', seconds: 25 },
+  { ...team, beat: 'Team', seconds: 15 },
+  { ...vision, beat: 'Vision', seconds: 15 },
+  { ...LIB.close, beat: 'Vision', seconds: 10 },
 ];
+
+/** Everything that does not fit in three minutes — for Q&A, Demo Day and investor meetings. */
+export const APPENDIX: Slide[] = [
+  LIB.illusion,
+  LIB.solana,
+  LIB.results,
+  LIB.research,
+  LIB.gap,
+  LIB.giants,
+  LIB.business,
+  LIB.ask,
+  LIB.roadmap,
+  LIB.whyNow,
+];
+
+if (process.env.NODE_ENV !== 'production') {
+  const total = PITCH.reduce((n, sl) => n + (sl.seconds ?? 0), 0);
+  if (total !== PITCH_SECONDS) console.warn(`Pitch budget is ${total}s, not ${PITCH_SECONDS}s.`);
+}
 
 /* ---------- charts ---------- */
 
@@ -788,12 +987,21 @@ function Donut() {
   const r = 70;
   const c = 2 * Math.PI * r;
   let offset = 0;
-  const tones = ['var(--color-brand-strong)', 'var(--color-brand-display)', 'var(--color-accent)', 'var(--color-ink-faint)'];
+  const tones = [
+    'var(--color-ink)',
+    'var(--color-brand-strong)',
+    'var(--color-brand-display)',
+    'var(--color-accent)',
+    'var(--color-accent-wash)',
+    'var(--color-ink-faint)',
+  ];
+  // Rounded percentages can sum to 99 or 101; draw from the real total.
+  const totalShare = FUNDING.split.reduce((n, s) => n + s.share, 0);
   return (
     <div className="flex flex-wrap items-center justify-center gap-6">
       <svg viewBox="0 0 180 180" width="180" height="180" aria-hidden="true">
         {FUNDING.split.map((s, i) => {
-          const len = (s.share / 100) * c;
+          const len = (s.share / totalShare) * c;
           const el = (
             <circle
               key={s.label}

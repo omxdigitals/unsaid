@@ -1,0 +1,50 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;900&family=Fraunces:opsz,wght@9..144,600&family=JetBrains+Mono:wght@500&display=block" rel="stylesheet">
+<style>
+  /* X header: 1500×500. The avatar covers roughly x 0–400, y 330–500 on desktop,
+     and mobile crops the top and bottom ~60px, so the type lives in the centre-right. */
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: 1500px; height: 500px; overflow: hidden; background: #f8f5ef; }
+  body { position: relative; font-family: 'Archivo', 'Arial Black', sans-serif; color: #1a1410; }
+  .grain { position: absolute; inset: 0;
+    background-image: radial-gradient(#1a14100d 1px, transparent 1px); background-size: 6px 6px; }
+  .rule { position: absolute; left: 0; right: 0; height: 3px; background: #1a1410; }
+  .rule.top { top: 78px; } .rule.top::after { content: ''; position: absolute; left: 0; right: 0; top: 6px; height: 1px; background: #1a1410; }
+  .rule.bot { bottom: 70px; }
+  .dateline { position: absolute; top: 40px; left: 440px; right: 90px; display: flex; justify-content: space-between;
+    font: 500 15px 'JetBrains Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: #57483f; }
+  .brand { position: absolute; top: 22px; left: 90px; display: flex; align-items: center; gap: 14px; }
+  .brand span { font: 600 32px 'Fraunces', Georgia, serif; letter-spacing: .14em; }
+  h1 { position: absolute; left: 440px; top: 120px; width: 980px;
+    font-weight: 900; font-size: 92px; line-height: .95; letter-spacing: -.025em; }
+  h1 em { font-style: normal; color: #e8571f; position: relative; white-space: nowrap; }
+  h1 em::before { content: ''; position: absolute; left: -6px; right: -8px; bottom: 6px; height: 38%;
+    background: #ffcfbb; z-index: -1; transform: skew(-6deg) rotate(-.6deg); border-radius: 3px; }
+  h1 { z-index: 1; isolation: isolate; }
+  .sub { position: absolute; left: 444px; top: 335px; font: 500 24px 'Archivo', sans-serif; color: #57483f; }
+  .sub b { color: #c2410c; font-weight: 500; }
+  .foot { position: absolute; bottom: 26px; left: 440px; right: 90px; display: flex; gap: 34px; align-items: center;
+    font: 500 15px 'JetBrains Mono', monospace; letter-spacing: .08em; color: #6b5b50; }
+  .foot i { width: 8px; height: 8px; border-radius: 50%; background: #ff7942; display: inline-block; }
+  .foot .url { margin-left: auto; color: #1a1410; }
+  .bigmark { position: absolute; left: 70px; top: 112px; width: 300px; height: 300px; }
+</style></head>
+<body>
+  <div class="grain"></div>
+  <div class="brand">
+    <svg width="40" height="40" viewBox="0 0 32 32"><path d="M9 4h14a6 6 0 0 1 6 6v8a6 6 0 0 1-6 6h-7.5l-5.2 4.3a1 1 0 0 1-1.63-.9L9.4 24H9a6 6 0 0 1-6-6v-8a6 6 0 0 1 6-6Z" fill="#1A1410"/><circle cx="11.2" cy="14" r="1.9" fill="#F8F5EF"/><circle cx="16" cy="14" r="1.9" fill="#F8F5EF"/><circle cx="20.8" cy="14" r="1.9" fill="#FF7942"/></svg>
+    <span>UNSAID</span>
+  </div>
+  <div class="dateline"><span>The private edition</span><span>Encrypted on your device</span><span>Receipts on Solana</span></div>
+  <div class="rule top"></div>
+
+  <!-- Oversized mark, ghosted, sits where the avatar will partly cover it -->
+  <svg class="bigmark" viewBox="0 0 32 32"><path d="M9 4h14a6 6 0 0 1 6 6v8a6 6 0 0 1-6 6h-7.5l-5.2 4.3a1 1 0 0 1-1.63-.9L9.4 24H9a6 6 0 0 1-6-6v-8a6 6 0 0 1 6-6Z" fill="#1A1410"/><circle cx="11.2" cy="14" r="1.9" fill="#F8F5EF"/><circle cx="16" cy="14" r="1.9" fill="#F8F5EF"/><circle cx="20.8" cy="14" r="1.9" fill="#FF7942"/></svg>
+
+  <h1>Not every thought<br>needs an <em>audience.</em></h1>
+  <p class="sub">A private journal with an AI that <b>can’t read your secrets.</b></p>
+
+  <div class="rule bot"></div>
+  <div class="foot"><i></i><span>0 PLAINTEXT WE HOLD</span><span>212 B PER RECEIPT</span><span>0.4 S TO UNLOCK</span><span class="url">unsaid-pi-sage.vercel.app</span></div>
+</body></html>

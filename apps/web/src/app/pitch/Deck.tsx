@@ -2,7 +2,21 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Logo } from '@/components/Logo';
-import { SLIDES } from './slides';
+import { APPENDIX, PITCH, type Slide } from './slides';
+import { TECH } from './tech';
+import { PITCH_SECONDS } from './data';
+
+/**
+ * Which deck. A string, not the slide list, because the slides hold render
+ * functions and the page that picks the deck is a server component.
+ */
+export type DeckName = 'pitch' | 'tech' | 'appendix';
+const DECKS: Record<DeckName, Slide[]> = { pitch: PITCH, tech: TECH, appendix: APPENDIX };
+const LABEL: Record<DeckName, string> = {
+  pitch: 'Pitch · 3 min',
+  tech: 'Technical demo',
+  appendix: 'Appendix',
+};
 
 /**
  * The deck engine. One slide at a time; each slide declares how many beats
@@ -14,7 +28,7 @@ import { SLIDES } from './slides';
  * F fullscreen · N presenter notes · Home / End jump.
  */
 
-function parseHash(): { slide: number; build: number } {
+function parseHash(SLIDES: Slide[]): { slide: number; build: number } {
   const match = /^#(\d+)(?:\.(\d+))?$/.exec(window.location.hash);
   if (!match) return { slide: 0, build: 0 };
   const slide = Math.min(Math.max(Number(match[1]) - 1, 0), SLIDES.length - 1);
@@ -22,7 +36,8 @@ function parseHash(): { slide: number; build: number } {
   return { slide, build };
 }
 
-export function Deck() {
+export function Deck({ deck = 'pitch' }: { deck?: DeckName }) {
+  const SLIDES = DECKS[deck];
   const [pos, setPos] = useState({ slide: 0, build: 0 });
   const [notes, setNotes] = useState(false);
   // The hash is read once on mount; until then, writing it back would clobber
@@ -31,9 +46,9 @@ export function Deck() {
   const touchX = useRef<number | null>(null);
 
   useEffect(() => {
-    setPos(parseHash());
+    setPos(parseHash(SLIDES));
     setReady(true);
-    const onHash = () => setPos(parseHash());
+    const onHash = () => setPos(parseHash(SLIDES));
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
@@ -44,7 +59,18 @@ export function Deck() {
     if (window.location.hash !== hash) history.replaceState(null, '', hash);
   }, [pos, ready]);
 
+  // Rehearsal clock. Starts on the first advance (or T), so opening the deck
+  // early does not eat into the three minutes. R resets it.
+  const [startedAt, setStartedAt] = useState<number | null>(null);
+  const [now, setNow] = useState(0);
+  useEffect(() => {
+    if (startedAt === null) return;
+    const t = setInterval(() => setNow(Date.now()), 250);
+    return () => clearInterval(t);
+  }, [startedAt]);
+
   const next = useCallback(() => {
+    setStartedAt((t) => t ?? Date.now());
     setPos(({ slide, build }) => {
       if (build < SLIDES[slide]!.builds) return { slide, build: build + 1 };
       if (slide < SLIDES.length - 1) return { slide: slide + 1, build: 0 };
@@ -77,14 +103,24 @@ export function Deck() {
         if (document.fullscreenElement) void document.exitFullscreen();
         else void document.documentElement.requestFullscreen?.();
       } else if (event.key === 'n' || event.key === 'N') setNotes((v) => !v);
+      else if (event.key === 't' || event.key === 'T') setStartedAt((t) => t ?? Date.now());
+      else if (event.key === 'r' || event.key === 'R') setStartedAt(null);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [next, prev]);
+  }, [next, prev, SLIDES]);
 
   const slide = SLIDES[pos.slide]!;
   const totalBeats = SLIDES.reduce((n, s) => n + s.builds + 1, 0);
   const beat = SLIDES.slice(0, pos.slide).reduce((n, s) => n + s.builds + 1, 0) + pos.build + 1;
+
+  // Where the clock should be by the end of this slide, from the per-slide budgets.
+  const timed = SLIDES.some((s) => s.seconds);
+  const elapsed = startedAt === null ? 0 : Math.max(0, Math.floor((now - startedAt) / 1000));
+  const dueBy = SLIDES.slice(0, pos.slide + 1).reduce((n, s) => n + (s.seconds ?? 0), 0);
+  const behind = startedAt !== null && elapsed > dueBy;
+  const over = elapsed > PITCH_SECONDS;
+  const clock = (sec: number) => `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
 
   return (
     <div
@@ -118,7 +154,8 @@ export function Deck() {
       <header className="mx-auto flex w-full max-w-7xl items-end justify-between px-5 pt-5 sm:px-10 sm:pt-7">
         <Logo withWordmark size={24} className="text-ink" />
         <span className="kicker !text-ink-faint">
-          {slide.section} · {String(pos.slide + 1).padStart(2, '0')}/{SLIDES.length}
+          {LABEL[deck]} · {slide.beat ?? slide.section} · {String(pos.slide + 1).padStart(2, '0')}/
+          {SLIDES.length}
         </span>
       </header>
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-10">
@@ -135,7 +172,17 @@ export function Deck() {
 
       <footer className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 pb-4 text-[0.6875rem] text-ink-faint sm:px-10">
         <span>Colosseum · Identity &amp; Privacy</span>
-        <span className="hidden sm:inline">← → to move · F fullscreen · N notes</span>
+        {timed ? (
+          <span
+            className={`font-mono text-xs ${over ? 'font-bold text-ember' : behind ? 'text-ember' : 'text-ink-soft'}`}
+            title="Rehearsal clock: T to start, R to reset"
+          >
+            {startedAt === null ? 'T to start the clock' : `${clock(elapsed)} / ${clock(PITCH_SECONDS)}`}
+            {startedAt !== null && ` · this slide by ${clock(dueBy)}`}
+          </span>
+        ) : (
+          <span className="hidden sm:inline">← → to move · F fullscreen · N notes</span>
+        )}
         <span className="flex gap-1" aria-hidden="true">
           {Array.from({ length: slide.builds + 1 }, (_, i) => (
             <span

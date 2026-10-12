@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { API_BASE as BASE_URL } from '@/lib/apiBase';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3011';
 
 /**
  * Says so when the vault's backend cannot be reached.

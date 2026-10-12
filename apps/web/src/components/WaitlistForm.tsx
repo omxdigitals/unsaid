@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { API_BASE as BASE_URL } from '@/lib/apiBase';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3011';
 
 /**
  * Waitlist capture.

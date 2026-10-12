@@ -87,17 +87,50 @@ export const UNIT_COST = {
 };
 
 /**
- * The ask. Left for the team to fill in — the deck renders whatever is here,
- * and an invented figure on a funding slide is worse than an honest blank.
+ * The ask: six months to a mainnet pilot, built bottom-up from this project's
+ * real cost drivers. Every line is an estimate, not a quote — check them
+ * before you say the number on camera. Receipt cost uses the measured 0.0017
+ * SOL per receipt (docs/paper/benchmarks.md §5) at the 22 Jun 2026 SOL quote.
  */
+export const FUNDING_LINES = [
+  { label: 'Team runway', usd: 22_500, basis: '3 people × $1,250/mo × 6 months' },
+  { label: 'Security audit', usd: 25_000, basis: 'Anchor program + client crypto review before real users' },
+  { label: 'Confidential GPU inference', usd: 12_000, basis: 'Dedicated TDX + NVIDIA CC instance, ~$2/h × 6 months' },
+  { label: 'Pilot & launch', usd: 6_000, basis: 'User research, first 1,000 users, launch' },
+  { label: 'Mainnet, RPC & receipts', usd: 5_000, basis: 'Paid RPC ~$500/mo + batched receipt rent for 1,000 users' },
+  { label: 'Hosting', usd: 2_000, basis: 'App, API, Postgres, object storage ~$300/mo' },
+];
+
+const FUNDING_TOTAL = FUNDING_LINES.reduce((n, l) => n + l.usd, 0);
+
 export const FUNDING = {
-  amount: '$___K',
-  split: [
-    { label: 'Confidential GPU inference', share: 35 },
-    { label: 'Mainnet, RPC & receipts', share: 20 },
-    { label: 'Security audit', share: 25 },
-    { label: 'Pilot & first launches', share: 20 },
-  ],
+  amount: `$${FUNDING_TOTAL / 1000}K`,
+  runway: '6 months to a mainnet pilot',
+  split: FUNDING_LINES.map((l) => ({ label: l.label, share: Math.round((l.usd / FUNDING_TOTAL) * 100) })),
 };
 
 export const LIVE_URL = 'unsaid-vault.vercel.app';
+
+/** Team — Colosseum lists leaving the team out as a common mistake. */
+export const TEAM: { name: string; role: string; background?: string }[] = [
+  { name: 'Siddanta Sodari', role: 'Full Stack Developer' },
+  { name: 'Rabin Poudel', role: 'Designer' },
+  { name: 'Sachin Rijal', role: 'Backend Developer' },
+];
+
+/**
+ * User feedback or validation, "even if informal" (Colosseum workshop). Real
+ * quotes and real numbers only: a fabricated quote on a traction slide is the
+ * fastest way to lose a judge who checks.
+ */
+export const VALIDATION = {
+  /** Where the community follows the build. */
+  links: [{ label: 'x.com/unsaid_privacy', href: 'https://x.com/unsaid_privacy' }],
+  /** Leave '' to hide; fill with real counts only. */
+  waitlist: '',
+  conversations: '',
+  quotes: [] as { quote: string; who: string }[],
+};
+
+/** Target length of the pitch video. Colosseum's limit is three minutes. */
+export const PITCH_SECONDS = 180;

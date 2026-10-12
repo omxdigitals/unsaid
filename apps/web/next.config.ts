@@ -82,6 +82,15 @@ const nextConfig: NextConfig = {
   transpilePackages: ['@unsaid/crypto', '@unsaid/solana', '@unsaid/types'],
   poweredByHeader: false,
 
+  /*
+   * The browser talks to the API through this site's own origin (see
+   * src/lib/apiBase.ts), so no request is cross-origin and no CORS allow-list
+   * has to know every address the site is served from.
+   */
+  async rewrites() {
+    return [{ source: '/api/:path*', destination: `${API_ORIGIN}/:path*` }];
+  },
+
   async headers() {
     return [
       {
