@@ -32,7 +32,7 @@ Both numbers move to roughly 7 and 8 if the plan below is executed.
 - [x] Call it for real: `create_record` from a script, read the account back,
       decode it. The program exists on chain; nothing has executed yet
 - [ ] Exercise the wallet path once against a real extension
-- [x] Deploy the web app publicly — https://unsaid-vault.vercel.app (6 Oct)
+- [x] Deploy the web app publicly — https://myunsaid.tech (first deployed 6 Oct, at a `*.vercel.app` preview address)
 - [ ] Register the team and claim the Solana track — category **Identity & Privacy**
 
 **Days 4–12 — the two new layers**

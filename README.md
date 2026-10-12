@@ -12,11 +12,11 @@ never content.
 
 | | |
 |---|---|
-| **Live app** | https://unsaid-vault.vercel.app |
-| **Pitch deck (3 min)** | [`/pitch`](https://unsaid-vault.vercel.app/pitch) — `T` starts the clock, `N` shows notes |
-| **Technical demo deck** | [`/pitch/tech`](https://unsaid-vault.vercel.app/pitch/tech) |
-| **Research, measured** | [`/research`](https://unsaid-vault.vercel.app/research) · [`docs/paper/benchmarks.md`](docs/paper/benchmarks.md) |
-| **Verify a receipt, without us** | [`/verify`](https://unsaid-vault.vercel.app/verify) |
+| **Live app** | https://myunsaid.tech |
+| **Pitch deck (3 min)** | [`/pitch`](https://www.myunsaid.tech/pitch) — `T` starts the clock, `N` shows notes |
+| **Technical demo deck** | [`/pitch/tech`](https://www.myunsaid.tech/pitch/tech) |
+| **Research, measured** | [`/research`](https://www.myunsaid.tech/research) · [`docs/paper/benchmarks.md`](docs/paper/benchmarks.md) |
+| **Verify a receipt, without us** | [`/verify`](https://www.myunsaid.tech/verify) |
 | **Solana program (devnet)** | `7nRKgRMiHfXg3fUXPRFdNX97BWfSKhNqvBaXZM5BLcHZ` — [`programs/unsaid`](programs/unsaid) |
 | **Why it is built this way** | [`docs/decisions.md`](docs/decisions.md) |
 | **Video scripts and checklist** | [`docs/submission.md`](docs/submission.md) |

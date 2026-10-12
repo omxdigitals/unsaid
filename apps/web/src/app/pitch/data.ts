@@ -109,7 +109,7 @@ export const FUNDING = {
   split: FUNDING_LINES.map((l) => ({ label: l.label, share: Math.round((l.usd / FUNDING_TOTAL) * 100) })),
 };
 
-export const LIVE_URL = 'unsaid-vault.vercel.app';
+export const LIVE_URL = 'myunsaid.tech';
 
 /** Team — Colosseum lists leaving the team out as a common mistake. */
 export const TEAM: { name: string; role: string; background?: string }[] = [
