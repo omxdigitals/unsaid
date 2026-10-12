@@ -7,7 +7,7 @@ import { Logo } from '@/components/Logo';
  */
 export default function NotFound() {
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-6">
+    <div className="container-page flex min-h-dvh flex-col">
       <header className="pb-3 pt-8">
         <Link href="/" className="text-ink" aria-label="UNSAID — home">
           <Logo withWordmark />

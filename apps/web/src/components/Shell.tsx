@@ -39,7 +39,7 @@ export function Shell({
   }, []);
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-4 sm:px-8">
+    <div className="container-page flex min-h-dvh flex-col">
       {/*
        * Same width, rules and wordmark as the front page, so moving from the
        * landing page into the vault never changes the paper underneath.

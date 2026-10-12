@@ -42,7 +42,7 @@ const TIMELINE = [
 export default function ResearchPage() {
   return (
     <div className="min-h-dvh bg-paper">
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-8">
+      <div className="container-page">
         <Masthead
           compact
           nav={

@@ -1,5 +1,6 @@
 import { loadConfig } from '../config.js';
 import { AnthropicReflectionProvider } from './anthropic.js';
+import { OpenAICompatibleReflectionProvider } from './openai-compatible.js';
 import { PhalaReflectionProvider } from './phala.js';
 import { StubReflectionProvider } from './stub.js';
 import type { ReflectionProvider } from './types.js';
@@ -24,6 +25,12 @@ export function getReflectionProvider(): ReflectionProvider {
       config.PHALA_API_KEY,
       config.PHALA_MODEL,
       config.PHALA_BASE_URL,
+    );
+  } else if (config.AI_PROVIDER === 'openai-compatible' && config.OPENAI_COMPAT_API_KEY) {
+    cached = new OpenAICompatibleReflectionProvider(
+      config.OPENAI_COMPAT_API_KEY,
+      config.OPENAI_COMPAT_MODEL,
+      config.OPENAI_COMPAT_BASE_URL,
     );
   } else if (config.AI_PROVIDER === 'anthropic' && config.ANTHROPIC_API_KEY) {
     cached = new AnthropicReflectionProvider(config.ANTHROPIC_API_KEY, config.AI_MODEL);

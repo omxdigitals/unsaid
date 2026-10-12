@@ -6,42 +6,6 @@ import { Icon } from '@/components/Icon';
  * global rule in globals.css.
  */
 
-const HEADLINES = [
-  'Encrypted on your phone before it leaves',
-  '0 plaintext markers found in our database, storage or logs',
-  'Every access leaves a 212-byte receipt on Solana',
-  'AI reflection inside a hardware enclave',
-  'Encryption is under 1% of save time',
-  'No account · No email · No audience',
-  'Verify any receipt without asking us',
-];
-
-/** A newspaper's breaking-news crawl, in the brand orange. Pauses on hover. */
-export function NewsTicker() {
-  const row = (hidden: boolean) => (
-    <ul aria-hidden={hidden || undefined} className="flex shrink-0 items-center">
-      {HEADLINES.map((h) => (
-        <li key={h} className="flex items-center whitespace-nowrap px-6 text-sm font-medium text-on-brand">
-          <span aria-hidden="true" className="mr-6 size-1.5 rounded-full bg-ink" />
-          {h}
-        </li>
-      ))}
-    </ul>
-  );
-  return (
-    <div className="group relative flex overflow-hidden bg-brand py-2.5" role="marquee" aria-label="Headlines">
-      <span className="relative z-10 flex shrink-0 items-center gap-2 bg-ink px-4 text-xs font-bold uppercase tracking-[0.18em] text-paper">
-        <span className="size-1.5 animate-pulse rounded-full bg-brand" />
-        Latest
-      </span>
-      <div className="flex animate-ticker group-hover:[animation-play-state:paused]">
-        {row(false)}
-        {row(true)}
-      </div>
-    </div>
-  );
-}
-
 /** Card art for "Sealed on your phone": a sentence and its ciphertext trading places. */
 export function SealArt() {
   return (
@@ -55,7 +19,7 @@ export function SealArt() {
   );
 }
 
-/** Card art for "Reflected on in a sealed chip": the chip, with attestation pulses. */
+/** Card art for Echo: the chip that reads one memory, pulsing while it works. */
 export function ChipArt() {
   return (
     <div aria-hidden="true" className="relative grid h-28 place-items-center overflow-hidden rounded-2xl bg-paper-tint">
@@ -63,9 +27,6 @@ export function ChipArt() {
       <span className="absolute size-14 animate-ring rounded-2xl border-2 border-brand [animation-delay:1.2s]" />
       <span className="relative grid size-14 place-items-center rounded-2xl bg-ink text-brand">
         <Icon name="cpu" size={28} strokeWidth={1.8} />
-      </span>
-      <span className="absolute bottom-2 left-3 rounded-full bg-paper-raised px-2 py-0.5 font-mono text-[0.6rem] text-ink-soft">
-        attested · sha256:7c1e
       </span>
     </div>
   );

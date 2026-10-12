@@ -126,7 +126,7 @@ export function Verifier() {
   const ready = owner.trim().length > 0 && thoughtId.trim().length > 0;
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-5 sm:px-8">
+    <div className="container-page flex min-h-dvh flex-col">
       <Masthead
         compact
         nav={

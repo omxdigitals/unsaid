@@ -139,7 +139,7 @@ export function PhoneMockup({ className = '' }: { className?: string }) {
 
       {/* Floating receipt card, offset off the phone's edge like a notification. */}
       <div
-        className={`absolute -right-4 top-[60%] w-[13.5rem] rounded-2xl border border-night-line bg-night p-3 text-paper shadow-[0_24px_40px_-20px_rgba(26,20,16,0.7)] transition-all duration-700 sm:-right-24 ${
+        className={`absolute -right-4 top-[60%] w-[13.5rem] rounded-2xl border border-night-line bg-night p-3 text-paper shadow-[0_24px_40px_-20px_rgba(26,20,16,0.7)] transition-all duration-700 lg:-right-8 ${
           phase === 'saved' ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
         }`}
       >

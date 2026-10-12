@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Icon, type IconName } from './Icon';
+import { Icon } from './Icon';
 
 /**
  * The desktop side panel inside the vault. On a wide screen the task column
@@ -9,28 +9,23 @@ import { Icon, type IconName } from './Icon';
  * task needs the whole width.
  */
 
-const GUARDS: { icon: IconName; label: string; detail: string }[] = [
-  { icon: 'lock', label: 'Sealed on this device', detail: 'AES-256-GCM, a fresh key per memory' },
-  { icon: 'key', label: 'Your phrase is the key', detail: 'PBKDF2, 600,000 rounds — we never see it' },
-  { icon: 'server', label: 'We hold ciphertext only', detail: 'No titles, previews or transcripts' },
+const GUARDS: { label: string; detail: string }[] = [
+  { label: 'Sealed on this device', detail: 'AES-256-GCM, a fresh key per memory' },
+  { label: 'Your phrase is the key', detail: 'PBKDF2, 600,000 rounds — we never see it' },
+  { label: 'We hold ciphertext only', detail: 'No titles, previews or transcripts' },
 ];
 
 export function VaultAside() {
   return (
     <aside aria-label="How this vault is protected" className="hidden lg:block">
       <div className="sticky top-8 flex flex-col gap-5">
-        <section className="rounded-3xl border border-line bg-paper-raised p-5">
+        <section className="border-t-[3px] border-rule pt-4">
           <p className="kicker">Protection</p>
-          <ul className="mt-4 flex flex-col gap-4">
+          <ul className="mt-3 flex flex-col gap-3">
             {GUARDS.map((g) => (
-              <li key={g.label} className="flex gap-3">
-                <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-brand-wash text-brand-strong">
-                  <Icon name={g.icon} size={18} strokeWidth={1.9} />
-                </span>
-                <span>
-                  <span className="block text-sm font-semibold text-ink">{g.label}</span>
-                  <span className="block text-xs leading-relaxed text-ink-faint">{g.detail}</span>
-                </span>
+              <li key={g.label} className="border-t border-line pt-3 first:border-t-0 first:pt-0">
+                <span className="block text-sm font-semibold text-ink">{g.label}</span>
+                <span className="block text-xs leading-relaxed text-ink-faint">{g.detail}</span>
               </li>
             ))}
           </ul>

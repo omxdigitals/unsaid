@@ -15,7 +15,7 @@ export default function Error({ reset }: { error: Error & { digest?: string }; r
   }, []);
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col justify-center px-6 py-16">
+    <div className="container-page flex min-h-dvh flex-col justify-center py-16">
       <h1 className="font-display text-3xl font-bold tracking-tight text-ink">That screen did not load.</h1>
       <p className="mt-3 max-w-prose text-sm leading-relaxed text-ink-soft">
         Nothing was sent anywhere and nothing was changed. Your vault is as you left it. Reloading

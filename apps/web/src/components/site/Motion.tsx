@@ -1,37 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { Icon } from '@/components/Icon';
 import { Logo } from '@/components/Logo';
-import { useInView } from '@/lib/useInView';
-
-/**
- * Fades and lifts its children in the first time they scroll into view.
- * Used below the fold only — anything in the first screen must paint at once,
- * or it would delay Largest Contentful Paint for a decoration.
- */
-export function Reveal({
-  children,
-  className = '',
-  delay = 0,
-}: {
-  children: ReactNode;
-  className?: string;
-  delay?: number;
-}) {
-  const [ref, shown] = useInView<HTMLDivElement>({ once: true, rootMargin: '0px 0px -10% 0px' });
-  return (
-    <div
-      ref={ref}
-      data-shown={shown}
-      className={`reveal ${className}`}
-      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
-    >
-      {children}
-    </div>
-  );
-}
 
 /**
  * A compact header that slides in once the masthead has scrolled away, so
@@ -53,7 +25,7 @@ export function StickyBar({ links }: { links: { href: string; label: string }[] 
         shown ? 'translate-y-0' : '-translate-y-full'
       }`}
     >
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-2.5 sm:px-8">
+      <div className="container-page flex items-center justify-between gap-4 py-2.5">
         <Link href="/" tabIndex={shown ? 0 : -1} className="text-ink" aria-label="UNSAID — home">
           <Logo withWordmark size={22} />
         </Link>

@@ -33,7 +33,7 @@ const EnvSchema = z.object({
   CORS_ORIGIN: z.string().default('http://localhost:3010'),
 
   // Echo. Absent means reflection is disabled rather than silently degraded.
-  AI_PROVIDER: z.enum(['anthropic', 'phala', 'echo-stub']).default('echo-stub'),
+  AI_PROVIDER: z.enum(['anthropic', 'phala', 'openai-compatible', 'echo-stub']).default('echo-stub'),
   ANTHROPIC_API_KEY: z.string().optional(),
 
   /**
@@ -43,6 +43,16 @@ const EnvSchema = z.object({
    * without taking our word for it.
    */
   PHALA_API_KEY: z.string().optional(),
+
+  /**
+   * Any OpenAI-compatible endpoint — how Echo runs on a free tier. Defaults to
+   * Groq; Gemini (https://generativelanguage.googleapis.com/v1beta/openai) and
+   * OpenRouter (https://openrouter.ai/api/v1, a ":free" model) work unchanged.
+   * Not attested: receipts record these accesses as unattested.
+   */
+  OPENAI_COMPAT_API_KEY: z.string().optional(),
+  OPENAI_COMPAT_BASE_URL: z.url().default('https://api.groq.com/openai/v1'),
+  OPENAI_COMPAT_MODEL: z.string().default('llama-3.3-70b-versatile'),
   PHALA_MODEL: z.string().default('google/gemma-4-31b-it'),
   PHALA_BASE_URL: z.string().default('https://inference.phala.com/v1'),
   // Matches .env.example, which said opus-5 while this default said sonnet-5 —
@@ -96,6 +106,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   if (config.isProduction) {
     if (config.AI_PROVIDER === 'anthropic' && !config.ANTHROPIC_API_KEY) {
       throw new Error('AI_PROVIDER is set to a real provider but ANTHROPIC_API_KEY is missing.');
+    }
+    if (config.AI_PROVIDER === 'openai-compatible' && !config.OPENAI_COMPAT_API_KEY) {
+      throw new Error('AI_PROVIDER is openai-compatible but OPENAI_COMPAT_API_KEY is missing.');
     }
     if (config.AI_PROVIDER === 'phala' && !config.PHALA_API_KEY) {
       throw new Error('AI_PROVIDER is set to phala but PHALA_API_KEY is missing.');
